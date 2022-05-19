@@ -14,7 +14,7 @@ if __name__ == '__main__':
             if content == 'end-here': #receive end signal
                 #Sort language list in descending order of appearing times
                 sorted_list = sorted(language.items(),key=operator.itemgetter(1),reverse=True)
-                print("Analysis result: Top 10 most used programming language is")
+                print("Analysis result: Top 10 most used programming languages are")
                 print(sorted_list[0:10])
                 language = {}
             elif content in language.keys():
