@@ -22,8 +22,8 @@ query ($queryString: String!) {
 """
 
 secondary_query = """
-query ($queryString: String!, $previous_cursor:String!) {
-  search(query: $queryString, type: REPOSITORY, first: 100, after: $previous_cursor) {
+query ($queryString: String!, $previousCursor:String!) {
+  search(query: $queryString, type: REPOSITORY, first: 100, after: $previousCursor) {
     pageInfo {
       hasNextPage
       endCursor
@@ -47,7 +47,7 @@ def send_request(date=None, after=None, username=None, token=None):
         response = requests.post('https://api.github.com/graphql', json={'query': first_query, 'variables': variables}, auth = auth)
     #traverse to next page
     else:
-        variables['previous_cursor'] = after
+        variables['previousCursor'] = after
         response = requests.post('https://api.github.com/graphql', json={'query': secondary_query, 'variables': variables}, auth = auth)
 
     #Check response
