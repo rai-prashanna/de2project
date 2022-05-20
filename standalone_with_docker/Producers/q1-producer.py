@@ -65,7 +65,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     #Pulsar setup
-    client = pulsar.Client('pulsar://localhost:6650')
+    client = pulsar.Client('pulsar://pulsarbroker:6650')
     producer = client.create_producer('DE2-Q1')
     
     #Github authentication
