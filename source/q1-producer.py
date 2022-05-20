@@ -54,7 +54,7 @@ def send_request(date=None, after=None, username=None, token=None):
     if response.status_code == 200:
         return response.json()
     else:
-        print("Error searching repository with date: %s" %date)
+        print("Error searching repository for created date: %s with following message: %s" %(date, response.json()))
         return None
 
 if __name__ == '__main__':
