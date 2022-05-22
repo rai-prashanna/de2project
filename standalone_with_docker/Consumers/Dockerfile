@@ -1,6 +1,6 @@
 FROM python:3.9-buster
-ADD requirements.txt q1-consumer.py ./ 
-RUN pip install -r requirements.txt
-CMD ["sleep 121"]
-ENTRYPOINT ["python"]
-CMD ["./q1-consumer.py", "10"]
+RUN mkdir -p /app
+ADD requirements.txt /app 
+RUN cd /app
+RUN pip install -r /app/requirements.txt 
+EXPOSE 6650
