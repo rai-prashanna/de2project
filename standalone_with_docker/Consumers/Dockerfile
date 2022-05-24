@@ -1,4 +1,4 @@
-FROM python:3.9-buster
+FROM python:3.9-alpine
 RUN mkdir -p /app
 ADD requirements.txt /app 
 RUN cd /app
