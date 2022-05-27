@@ -68,7 +68,9 @@ if __name__ == '__main__':
     client = pulsar.Client('pulsar://pulsarbroker:6650')
     producer = client.create_producer("Q1",block_if_queue_full=True,batching_enabled=True,batching_max_publish_delay_ms=10)
     #producer = client.create_producer("Q1")
-    
+    def send_callback(res, msg):
+      print('Message published res=%s', res)
+
     #Github authentication
     username = args[0]
     token = args[1]
@@ -86,7 +88,8 @@ if __name__ == '__main__':
             #Iterate over repository list
             for repo in repos: 
                 if repo['node']['primaryLanguage'] != None: #check if repository uses any language
-                    producer.send(str(repo['node']['primaryLanguage']['name']).encode('utf-8'))
+                    
+                    producer.send_async(str(repo['node']['primaryLanguage']['name']).encode('utf-8'),send_callback)
             
             #Check if more results exists
             if page_info['hasNextPage'] == True:

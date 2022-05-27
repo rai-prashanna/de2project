@@ -11,13 +11,18 @@ if __name__ == '__main__':
     n_repos = args[0]
     #Pulsar setup
     client = pulsar.Client('pulsar://pulsarbroker:6650')
-    consumer = client.subscribe('DE2-Q1', subscription_name='DE-sub')
+    consumer = client.subscribe("Q1", subscription_name="Q1")
+    #consumer=client.subscribe('persistent://public/default/Q1','Q1',consumer_type=pulsar.ConsumerType.Shared,
+    #initial_position=pulsar.InitialPosition.Latest,message_listener=None,
+    #negative_ack_redelivery_delay_ms=60000)    
+    
     #language list
     language = {}
     while True:
         msg = consumer.receive()
         try:
             content = msg.data().decode('utf-8')
+            consumer.acknowledge(msg)
             if content == 'end-here': #receive end signal
                 #Sort language list in descending order of appearing times
                 sorted_list = sorted(language.items(),key=operator.itemgetter(1),reverse=True)
@@ -28,7 +33,7 @@ if __name__ == '__main__':
                 language[content] += 1
             else:
                 language[content] = 1
-            consumer.acknowledge(msg)
+            
         except:
             consumer.negative_acknowledge(msg)
 
