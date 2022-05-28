@@ -3,19 +3,13 @@ import operator
 import sys
 
 if __name__ == '__main__':
-    #Validate program arguments
-    args = sys.argv[1:]
-    if len(args) != 1:
-        print("Program requires 1 input arg: number of top repos")
-        sys.exit(1)
-    n_repos = args[0]
     #Pulsar setup
     client = pulsar.Client('pulsar://localhost:6650')
     consumer = client.subscribe('DE2-lang', subscription_name='DE-Q1', consumer_type=_pulsar.ConsumerType.Shared)
     #language list
     language = {}
     count = 0
-    frequency = 100 #frequency of printing top list/send update
+    frequency = 10 #frequency of printing top list/send update
 
     while True:
         msg = consumer.receive()

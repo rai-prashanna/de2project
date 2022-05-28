@@ -26,26 +26,26 @@ if __name__ == '__main__':
     consumer = client.subscribe('DE2-file', subscription_name='DE-Q3', consumer_type=_pulsar.ConsumerType.Shared)
     #language list
     language = {}
-    count = 0
-    frequency = 100 #frequency of printing top list/send update
+    msg_count = 0
+    frequency = 25 #frequency of printing top list/send update
 
     while True:
         msg = consumer.receive()
+        msg_count += 1
         try:
-            content = msg.data().decode('utf-8')
+            content = msg.data().decode('utf-8').replace("'", '"')
             repo = json.loads(content)
             repo_language = repo['language']
-            file_list = list(repo['file_list'])
+            file_list = repo['file_list']
             if has_unit_test(file_list):
                 if repo_language in language.keys():
                     language[repo_language] += 1
                 else:
                     language[repo_language] = 1
             #Periodically print out list of languages and project counts
-            if count == frequency:
-                print("Current list of language count for repositories with unit-test:")
+            if msg_count % frequency == 1:
+                print("Current list of language count for repositories with unit-test from %d message:" %msg_count)
                 print(language)
-                count = 0
             consumer.acknowledge(msg)
         except:
             consumer.negative_acknowledge(msg)
