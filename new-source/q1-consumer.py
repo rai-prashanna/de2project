@@ -1,30 +1,39 @@
 import pulsar, _pulsar
 import operator
 import sys
+import socket
 
 if __name__ == '__main__':
     #Pulsar setup
     client = pulsar.Client('pulsar://localhost:6650')
     consumer = client.subscribe('DE2-lang', subscription_name='DE-Q1', consumer_type=_pulsar.ConsumerType.Shared)
+    agg_producer = client.create_producer('DE2-agg')
     #language list
     language = {}
-    count = 0
-    frequency = 10 #frequency of printing top list/send update
+    #Aggregation message
+    agg_msg = {}
+    agg_msg['type'] = 'Q1'
+    msg_count = 0
+    frequency = 100 #frequency of printing top list/send update
 
     while True:
         msg = consumer.receive()
+        msg_count += 1
         try:
             content = msg.data().decode('utf-8')
             if content in language.keys():
                 language[content] += 1
             else:
                 language[content] = 1
-            count += 1
             #Periodically print out list of languages and project counts
-            if count == frequency:
-                print("Current list of language count:")
+            if msg_count % frequency == 1:
+                print("Current list of language count from %d messages:" %msg_count)
                 print(language)
-                count = 0
+                #Craft message to the aggregation server
+                agg_msg['worker'] = socket.gethostname() #for agg server tell apart different replicas of a consumer
+                agg_msg['result'] = language
+                #Send aggregation message
+                agg_producer.send(str(agg_msg).encode('utf-8'))
             consumer.acknowledge(msg)
         except:
             consumer.negative_acknowledge(msg)

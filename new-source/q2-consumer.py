@@ -2,6 +2,8 @@ import pulsar, _pulsar
 import operator
 import sys
 import json
+import socket
+
 
 #Find corresponding positon for a number in a descending sorted list
 def find_position(repo_commits:list, n_commits:int):
@@ -25,12 +27,17 @@ if __name__ == '__main__':
     #Pulsar setup
     client = pulsar.Client('pulsar://localhost:6650')
     consumer = client.subscribe('DE2-commit', subscription_name='DE-Q1', consumer_type=_pulsar.ConsumerType.Shared)
+    agg_producer = client.create_producer('DE2-agg')
     
     #List of repos and their corresponding number of commits
     repo_list = []
     repo_commits = []
+    #Aggregation message
+    agg_msg = {}
+    agg_msg['type'] = 'Q2'
+
     msg_count = 0
-    frequency = 25 #frequency of printing top list/send update
+    frequency = 100 #frequency of printing top list/send update
 
     while True:
         msg = consumer.receive()
@@ -60,6 +67,11 @@ if __name__ == '__main__':
             if msg_count % frequency == 0:
                 print("Current list of top %d repository with most commits from %d message:" %(n_top_repos, msg_count))
                 print(dict(zip(repo_list, repo_commits)))
+                #Craft message to the aggregation server
+                agg_msg['worker'] = socket.gethostname() #for agg server tell apart different replicas of a consumer
+                agg_msg['result'] = dict(zip(repo_list, repo_commits))
+                #Send aggregation message
+                agg_producer.send(str(agg_msg).encode('utf-8'))
             consumer.acknowledge(msg)
         except:
             consumer.negative_acknowledge(msg)

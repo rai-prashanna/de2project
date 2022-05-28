@@ -1,8 +1,8 @@
 import pulsar, _pulsar
-import operator
-import sys
 import re
 import json
+import socket
+
 
 keywords = ['test', 'spec']
 regex_expression = '(\s|^|\W|\d)' + "|".join(map(re.escape, keywords)) + '(\s|$|\W|\d)'
@@ -24,10 +24,15 @@ if __name__ == '__main__':
     #Pulsar setup
     client = pulsar.Client('pulsar://localhost:6650')
     consumer = client.subscribe('DE2-file', subscription_name='DE-Q3', consumer_type=_pulsar.ConsumerType.Shared)
+    agg_producer = client.create_producer('DE2-agg')
     #language list
     language = {}
+    #Aggregation message
+    agg_msg = {}
+    agg_msg['type'] = 'Q3'
+
     msg_count = 0
-    frequency = 25 #frequency of printing top list/send update
+    frequency = 100 #frequency of printing top list/send update
 
     while True:
         msg = consumer.receive()
@@ -46,6 +51,12 @@ if __name__ == '__main__':
             if msg_count % frequency == 1:
                 print("Current list of language count for repositories with unit-test from %d message:" %msg_count)
                 print(language)
+                #Craft message to the aggregation server
+                agg_msg['worker'] = socket.gethostname() #for agg server tell apart different replicas of a consumer
+                agg_msg['result'] = language
+                #Send aggregation message
+                agg_producer.send(str(agg_msg).encode('utf-8'))
+                
             consumer.acknowledge(msg)
         except:
             consumer.negative_acknowledge(msg)
