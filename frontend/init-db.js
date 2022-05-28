@@ -1,11 +1,17 @@
-db = db.getSiblingDB("animal_db");
-db.animal_tb.drop();
+db = db.getSiblingDB("q1");
+db.lang.drop();
 
-db.animal_tb.insertMany([
+db.lang.insertMany([
     {
         "id": 1,
         "python": "100",
-        "java": "50",
+        "java": "111",
 	"c": "10"
+    },
+    {
+        "id": 2,
+        "python": "2",
+        "jave": "1",
+	"c": "56"
     },
 ]);

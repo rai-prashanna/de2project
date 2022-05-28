@@ -11,7 +11,7 @@ db:
   image: mongo:latest
   hostname: test_mongodb
   environment:
-    - MONGO_INITDB_DATABASE=animal_db
+    - MONGO_INITDB_DATABASE=q1
     - MONGO_INITDB_ROOT_USERNAME=root
     - MONGO_INITDB_ROOT_PASSWORD=pass
   volumes:
