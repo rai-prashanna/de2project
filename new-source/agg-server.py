@@ -59,7 +59,7 @@ if __name__ == '__main__':
             #Question 2
             elif update['type'] == 'Q2':
                 #Update to part list
-                Q1_part['worker'] = worker['result']
+                Q2_part['worker'] = worker['result']
                 #Aggregate results
                 Q2_final = agg_2(Q2_part)
                 print("Current result for Q2:")
