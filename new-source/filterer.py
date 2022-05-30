@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
 
     #Pulsar setup
-    client = pulsar.Client('pulsar://localhost:6650')
+    client = pulsar.Client('pulsar://192.168.2.139:6650')
     consumer = client.subscribe('DE2-repo', subscription_name='filter', consumer_type=_pulsar.ConsumerType.Shared)
     lang_producer = client.create_producer('DE2-lang')
     commit_producer = client.create_producer('DE2-commit')
@@ -35,17 +35,16 @@ if __name__ == '__main__':
             commit_producer.send(str(commit_msg).encode('utf-8'))
             send_count += 1
 
-            # #Extract language/file list and craft message for file topic
+            #Extract language/file list and craft message for file topic
             file_msg = {}
             file_msg['language'] = repo_language
             file_msg['file_list'] = repo['object']['entries']
             file_producer.send(str(file_msg).encode('utf-8'))
             send_count += 1
-            consumer.acknowledge(msg)
 
             if recv_count % frequency == 1:
                 print("Total messages>>Received: %d, Sent: %d" %(recv_count, send_count))
-
+            consumer.acknowledge(msg)
         except:
             consumer.negative_acknowledge(msg)
 
