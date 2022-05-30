@@ -142,10 +142,14 @@ if __name__ == '__main__':
     start_date = datetime(2021,1,1)
     period = 5; #search for 'period' days from start_date
 
+    request_count = 0
+    error_count = 0
+
     #iterate over days in period
     for i in range(0, period):
         date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
         response = send_request(date=date, username=username, token=token)
+        request_count += 1
         if response != None and response['data']['search']['repositoryCount'] != 0:
             repos = response['data']['search']['edges'] #list of repositories
             page_info = response['data']['search']['pageInfo'] #page info (to find if more results exist)
@@ -174,10 +178,14 @@ if __name__ == '__main__':
                         else: #otherwise quit
                             continue_flag = False
                     else:
+                        error_count += 1
                         continue_flag = False
                     time.sleep(0.7)
+        else:
+          error_count += 1
         print("Finish request(s) for date: %s" %date)
 
+    print("Job Finished with %d total number of request, with %d error response" %(request_count, error_count))
     #Send ending signal to consumer
     # producer.send('end-here'.encode('utf-8'))
     #Destroy pulsar client
