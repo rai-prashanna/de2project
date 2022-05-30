@@ -25,7 +25,7 @@ if __name__ == '__main__':
         sys.exit(1)
     n_top_repos = int(args[0])
     #Pulsar setup
-    client = pulsar.Client('pulsar://localhost:6650')
+    client = pulsar.Client('pulsar://pulsarbroker:6650')
     consumer = client.subscribe('DE2-commit', subscription_name='DE-Q1', consumer_type=_pulsar.ConsumerType.Shared)
     agg_producer = client.create_producer('DE2-agg')
     

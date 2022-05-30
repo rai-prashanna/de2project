@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
 
     #Pulsar setup
-    client = pulsar.Client('pulsar://localhost:6650')
+    client = pulsar.Client('pulsar://pulsarbroker:6650')
     consumer = client.subscribe('DE2-repo', subscription_name='filter', consumer_type=_pulsar.ConsumerType.Shared)
     lang_producer = client.create_producer('DE2-lang')
     commit_producer = client.create_producer('DE2-commit')

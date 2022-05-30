@@ -5,7 +5,7 @@ import socket
 
 if __name__ == '__main__':
     #Pulsar setup
-    client = pulsar.Client('pulsar://localhost:6650')
+    client = pulsar.Client('pulsar://pulsarbroker:6650')
     consumer = client.subscribe('DE2-lang', subscription_name='DE-Q1', consumer_type=_pulsar.ConsumerType.Shared)
     agg_producer = client.create_producer('DE2-agg')
     #language list
