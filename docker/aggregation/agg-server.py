@@ -27,7 +27,7 @@ def agg_2(part: dict):
 if __name__ == '__main__':
     #Pulsar setup
     client = pulsar.Client('pulsar://pulsarbroker:6650')
-    consumer = client.subscribe('DE2-agg', subscription_name='DE-agg', consumer_type=_pulsar.ConsumerType.Exclusive)
+    consumer = client.subscribe('DE2-agg', subscription_name='DE-agg', consumer_type= pulsar.ConsumerType.Exclusive)
     #Q1 list:
     Q1_part = {}
     Q1_final = {}
