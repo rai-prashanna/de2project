@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 import time
 
 first_query = """
-query ($queryString: String!, $numRepos: Int!) {
-  search(query: $queryString, type: REPOSITORY, first: $numRepos) {
+query ($queryString: String!) {
+  search(query: $queryString, type: REPOSITORY, first: 100) {
     pageInfo {
       hasNextPage
       endCursor
@@ -15,48 +15,15 @@ query ($queryString: String!, $numRepos: Int!) {
     edges {
       node {
         ... on Repository {
-          primaryLanguage {
-            name
-          }
-          nameWithOwner
-          refs(first: 100, refPrefix: "refs/heads/") {
-            nodes {
-              name
-              target {
-                ... on Commit {
-                  history {
-                    totalCount
-                  }
-                }
-              }
-            }
-          }
-          object(expression: "HEAD:") {
-            ... on Tree {
-              entries {
-                name
-                type
-                object {
-                  ... on Tree {
-                    entries {
-                      name
-                      type
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+          primaryLanguage {name}
+        }}}
       }
     }
-  }
-}
 """
 
 secondary_query = """
-query ($queryString: String!, $previousCursor: String!, $numRepos: Int!) {
-  search(query: $queryString, type: REPOSITORY, first: $numRepos, after: $previousCursor ) {
+query ($queryString: String!, $previousCursor:String!) {
+  search(query: $queryString, type: REPOSITORY, first: 100, after: $previousCursor) {
     pageInfo {
       hasNextPage
       endCursor
@@ -65,50 +32,16 @@ query ($queryString: String!, $previousCursor: String!, $numRepos: Int!) {
     edges {
       node {
         ... on Repository {
-          primaryLanguage {
-            name
-          }
-          nameWithOwner
-          refs(first: 100, refPrefix: "refs/heads/") {
-            nodes {
-              name
-              target {
-                ... on Commit {
-                  history {
-                    totalCount
-                  }
-                }
-              }
-            }
-          }
-          object(expression: "HEAD:") {
-            ... on Tree {
-              entries {
-                name
-                type
-                object {
-                  ... on Tree {
-                    entries {
-                      name
-                      type
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+          primaryLanguage {name}
+        }}}
       }
     }
-  }
-}
 """
 
 def send_request(date=None, after=None, username=None, token=None):
     auth = requests.auth.HTTPBasicAuth(username, token)
     variables ={}
     variables['queryString'] = "created:"+ date +" sort:stars-desc"
-    variables['numRepos'] = 25 #Number of repos in a response
     #getting the first page
     if after == None:
         response = requests.post('https://api.github.com/graphql', json={'query': first_query, 'variables': variables}, auth = auth)
@@ -121,7 +54,7 @@ def send_request(date=None, after=None, username=None, token=None):
     if response.status_code == 200:
         return response.json()
     else:
-        print("Error searching repository for created date: %s with following message: %s" %(date, response.json()))
+        print("Error searching repository with date: %s" %date)
         return None
 
 if __name__ == '__main__':
@@ -133,14 +66,17 @@ if __name__ == '__main__':
 
     #Pulsar setup
     client = pulsar.Client('pulsar://pulsarbroker:6650')
-    producer = client.create_producer('DE2-repo')
-    
+    producer = client.create_producer("Q1",block_if_queue_full=True,batching_enabled=True,batching_max_publish_delay_ms=10)
+    #producer = client.create_producer("Q1")
+    def send_callback(res, msg):
+      print('Message published res=%s', res)
+
     #Github authentication
     username = args[0]
     token = args[1]
 
     start_date = datetime(2021,1,1)
-    period = 5; #search for 'period' days from start_date
+    period = 1; #search for 'period' days from start_date
 
     #iterate over days in period
     for i in range(0, period):
@@ -150,9 +86,10 @@ if __name__ == '__main__':
             repos = response['data']['search']['edges'] #list of repositories
             page_info = response['data']['search']['pageInfo'] #page info (to find if more results exist)
             #Iterate over repository list
-            for repo in repos:
-                msg = str(repo['node']).replace("'", '"')
-                producer.send(msg.encode('utf-8'))
+            for repo in repos: 
+                if repo['node']['primaryLanguage'] != None: #check if repository uses any language
+                    
+                    producer.send_async(str(repo['node']['primaryLanguage']['name']).encode('utf-8'),send_callback)
             
             #Check if more results exists
             if page_info['hasNextPage'] == True:
@@ -165,9 +102,9 @@ if __name__ == '__main__':
                         repos = traverse_response['data']['search']['edges'] #list of repositories
                         page_info = traverse_response['data']['search']['pageInfo'] #page info (to find if more results exist)
                         #Iterate over repository list
-                        for repo in repos:
-                            msg = str(repo['node']).replace("'", '"')
-                            producer.send(msg.encode('utf-8'))
+                        for repo in repos: 
+                            if repo['node']['primaryLanguage'] != None: #check if repository uses any language
+                                producer.send(str(repo['node']['primaryLanguage']['name']).encode('utf-8'))
                         #Continue if still have more results
                         if page_info['hasNextPage'] == True:
                             next_page_cursor = page_info['endCursor']
@@ -179,6 +116,6 @@ if __name__ == '__main__':
         print("Finish request(s) for date: %s" %date)
 
     #Send ending signal to consumer
-    # producer.send('end-here'.encode('utf-8'))
+    producer.send('end-here'.encode('utf-8'))
     #Destroy pulsar client
     client.close()

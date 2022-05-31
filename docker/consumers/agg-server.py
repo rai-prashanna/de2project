@@ -1,4 +1,4 @@
-import pulsar
+import pulsar, _pulsar
 import operator
 import json
 
