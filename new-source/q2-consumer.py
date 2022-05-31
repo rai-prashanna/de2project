@@ -4,6 +4,7 @@ import sys
 import json
 import socket
 
+PULSAR_IP = '192.168.2.139'
 
 #Find corresponding positon for a number in a descending sorted list
 def find_position(repo_commits:list, n_commits:int):
@@ -25,7 +26,7 @@ if __name__ == '__main__':
         sys.exit(1)
     n_top_repos = int(args[0])
     #Pulsar setup
-    client = pulsar.Client('pulsar://localhost:6650')
+    client = pulsar.Client('pulsar://' + PULSAR_IP + ':6650')
     consumer = client.subscribe('DE2-commit', subscription_name='DE-Q1', consumer_type=_pulsar.ConsumerType.Shared)
     agg_producer = client.create_producer('DE2-agg')
     
