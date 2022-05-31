@@ -4,10 +4,12 @@ import operator
 import sys
 import json
 
+PULSAR_IP = '192.168.2.139'
+
 if __name__ == '__main__':
 
     #Pulsar setup
-    client = pulsar.Client('pulsar://192.168.2.139:6650')
+    client = pulsar.Client('pulsar://' + PULSAR_IP + ':6650')
     consumer = client.subscribe('DE2-repo', subscription_name='filter', consumer_type=_pulsar.ConsumerType.Shared)
     lang_producer = client.create_producer('DE2-lang')
     commit_producer = client.create_producer('DE2-commit')
