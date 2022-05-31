@@ -1,6 +1,7 @@
 import pulsar, _pulsar
 import operator
 import json
+from datetime import datetime
 
 PULSAR_IP = '192.168.2.139'
 
@@ -48,7 +49,7 @@ if __name__ == '__main__':
             content = msg.data().decode('utf-8').replace("'", '"')
             update = json.loads(content)
             worker = update['worker']
-
+            now = datetime.now().strftime("%Y/%m/%d,%H:%M:%S")
             #Question 1
             if update['type'] == 'Q1':
                 #Update to part list
@@ -57,7 +58,7 @@ if __name__ == '__main__':
                 Q1_final = agg_1(Q1_part)
                 #Do smthing with the current updated result
                 print("**********************************")
-                print("Current result for Q1:")
+                print("[%s]Update >> Current result for Q1:" %now)
                 print(Q1_final)
             #Question 2
             elif update['type'] == 'Q2':
@@ -66,7 +67,7 @@ if __name__ == '__main__':
                 #Aggregate results
                 Q2_final = agg_2(Q2_part)
                 print("**********************************")
-                print("Current result for Q2:")
+                print("[%s]Update >> Current result for Q2:" %now)
                 print(Q2_final)
 
             #Question 3
@@ -77,7 +78,7 @@ if __name__ == '__main__':
                 Q3_final = agg_1(Q3_part)
                 #Do smthing with the current updated result
                 print("**********************************")
-                print("Current result for Q3:")
+                print("[%s]Update >> Current result for Q3:" %now)
                 print(Q3_final)
 
             #Question 4
@@ -88,7 +89,7 @@ if __name__ == '__main__':
                 Q4_final = agg_1(Q4_part)
                 #Do smthing with the current updated result
                 print("**********************************")
-                print("Current result for Q4:")
+                print("[%s]Update >> Current result for Q4:" %now)
                 print(Q4_final)
 
             else:

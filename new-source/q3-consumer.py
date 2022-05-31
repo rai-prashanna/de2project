@@ -2,6 +2,7 @@ import pulsar, _pulsar
 import re
 import json
 import socket
+from datetime import datetime
 
 PULSAR_IP = '192.168.2.139'
 
@@ -39,6 +40,7 @@ if __name__ == '__main__':
         msg = consumer.receive()
         msg_count += 1
         try:
+            now = datetime.now().strftime("%Y/%m/%d,%H:%M:%S")
             content = msg.data().decode('utf-8').replace("'", '"')
             repo = json.loads(content)
             repo_language = repo['language']
@@ -50,7 +52,7 @@ if __name__ == '__main__':
                     language[repo_language] = 1
             #Periodically print out list of languages and project counts
             if msg_count % frequency == 1:
-                print("Current list of language count for repositories with unit-test from %d message:" %msg_count)
+                print("[%s]Current list of language count for repositories with unit-test from %d messages:" %(now, msg_count))
                 print(language)
                 #Craft message to the aggregation server
                 agg_msg['worker'] = socket.gethostname() #for agg server tell apart different replicas of a consumer

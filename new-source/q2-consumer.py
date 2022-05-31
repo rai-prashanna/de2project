@@ -3,6 +3,7 @@ import operator
 import sys
 import json
 import socket
+from datetime import datetime
 
 PULSAR_IP = '192.168.2.139'
 
@@ -44,6 +45,7 @@ if __name__ == '__main__':
         msg = consumer.receive()
         msg_count += 1
         try:
+            now = datetime.now().strftime("%Y/%m/%d,%H:%M:%S")
             content = msg.data().decode('utf-8').replace("'", '"')
             repo = json.loads(content)
             repo_name = repo['name']
@@ -66,7 +68,7 @@ if __name__ == '__main__':
                     repo_commits.pop()
                 #Periodically print out list of languages and project counts
             if msg_count % frequency == 0:
-                print("Current list of top %d repository with most commits from %d message:" %(n_top_repos, msg_count))
+                print("[%s] Current list of top %d repositories with most commits from %d messages:" %(now, n_top_repos, msg_count))
                 print(dict(zip(repo_list, repo_commits)))
                 #Craft message to the aggregation server
                 agg_msg['worker'] = socket.gethostname() #for agg server tell apart different replicas of a consumer

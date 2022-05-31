@@ -2,6 +2,7 @@ import pulsar, _pulsar
 import operator
 import sys
 import socket
+from datetime import datetime
 
 PULSAR_IP = '192.168.2.139'
 
@@ -23,13 +24,14 @@ if __name__ == '__main__':
         msg_count += 1
         try:
             content = msg.data().decode('utf-8')
+            now = datetime.now().strftime("%Y/%m/%d,%H:%M:%S")
             if content in language.keys():
                 language[content] += 1
             else:
                 language[content] = 1
             #Periodically print out list of languages and project counts
             if msg_count % frequency == 1:
-                print("Current list of language count from %d messages:" %msg_count)
+                print("[%s] Current list of language count from %d messages:" %(now,msg_count))
                 print(language)
                 #Craft message to the aggregation server
                 agg_msg['worker'] = socket.gethostname() #for agg server tell apart different replicas of a consumer
