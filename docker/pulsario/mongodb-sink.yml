@@ -1,0 +1,11 @@
+tenant: "public"
+namespace: "default"
+name: "mongo-prashanna"
+configs:
+    mongoUri: "mongodb://mongodb:27017/admin"
+    database: "prashanna"
+    collection: "example"
+    batchSize: 1
+    batchTimeMs: 1000
+
+

@@ -1,0 +1,75 @@
+version: "3.3"
+
+
+services:
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+      - 27018:27018
+      - 27019:27019
+    command: mongod 
+
+  mongo-express:
+    image: mongo-express:latest
+    restart: always
+    depends_on:
+      - "mongodb"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+    ports:
+      - 8081:8081
+
+  pulsarbroker:
+    hostname: pulsarbroker
+    image: apachepulsar/pulsar-standalone
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    links:  
+      - mongodb:mongodb
+    #entrypoint: /home/entrypoint.sh
+    command: /pulsar/bin/pulsar standalone
+    volumes:
+      #- $PWD/pulsario/data:/pulsar/data
+      - $PWD/pulsario/:/home
+    healthcheck:
+      test: "curl -s --fail http://localhost:8080/admin/v2/brokers/health"
+  # # dashboard:
+  # #   image: apachepulsar/pulsar-dashboard:2.7.0
+  # #   depends_on:
+  # #     - pulsarbroker
+  # #   ports:
+  # #     - "80:80"
+  # #   environment:
+  # #     - SERVICE_URL=http://pulsarbroker:8080
+  # consumer:
+  #   build: 
+  #     context: ./consumers  
+  #   depends_on:
+  #     - pulsarbroker
+  #   links:  
+  #     - pulsarbroker:pulsarbroker
+  #   volumes:
+  #     - ./consumers:/app
+  #   #entrypoint: /app/entrypoint.sh
+  #   restart: always
+  #   #command: /bin/bash -c "sleep 60 && python app/q1-consumer.py 10" 
+  #   command: /bin/bash -c "sleep 500000"
+  # producer:
+  #   build: 
+  #     context: ./producers
+  #   depends_on:
+  #     - pulsarbroker  
+  #   links:  
+  #     - pulsarbroker:pulsarbroker
+  #   restart: always
+  #   volumes:
+  #     - ./producers:/app
+  #   command: /bin/bash -c "sleep 60 && python /app/request-producer.py rai-prashanna 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"
+  #   #command: /bin/bash -c "sleep 500000"
+  #   #command: /bin/sh -c "sleep 60 && python app/q1-producer-test.py rai-prashanna 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"
+
+
