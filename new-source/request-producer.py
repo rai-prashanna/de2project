@@ -4,6 +4,8 @@ import requests
 from datetime import datetime, timedelta
 import time
 
+PULSAR_IP = '192.168.2.139'
+
 first_query = """
 query ($queryString: String!, $numRepos: Int!) {
   search(query: $queryString, type: REPOSITORY, first: $numRepos) {
@@ -108,7 +110,7 @@ def send_request(date=None, after=None, username=None, token=None):
     auth = requests.auth.HTTPBasicAuth(username, token)
     variables ={}
     variables['queryString'] = "created:"+ date +" sort:stars-desc"
-    variables['numRepos'] = 25 #Number of repos in a response
+    variables['numRepos'] = 40 #Number of repos in a response
     #getting the first page
     if after == None:
         response = requests.post('https://api.github.com/graphql', json={'query': first_query, 'variables': variables}, auth = auth)
@@ -132,7 +134,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     #Pulsar setup
-    client = pulsar.Client('pulsar://localhost:6650')
+    client = pulsar.Client('pulsar://' + PULSAR_IP + ':6650')
     producer = client.create_producer('DE2-repo')
     
     #Github authentication
@@ -144,13 +146,19 @@ if __name__ == '__main__':
 
     request_count = 0
     error_count = 0
+    retry_count = 0
 
     #iterate over days in period
     for i in range(0, period):
+        retry_count = 0 #reset retry count
         date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
-        response = send_request(date=date, username=username, token=token)
-        request_count += 1
-        if response != None and response['data']['search']['repositoryCount'] != 0:
+        continue_flag = True
+        while(continue_flag):
+          response = send_request(date=date, username=username, token=token)
+          request_count += 1
+          #If successful response
+          if response != None and response['data']['search']['repositoryCount'] != 0:
+            retry_count = 0 #reset retry count
             repos = response['data']['search']['edges'] #list of repositories
             page_info = response['data']['search']['pageInfo'] #page info (to find if more results exist)
             #Iterate over repository list
@@ -165,7 +173,9 @@ if __name__ == '__main__':
                 #Request results till last page
                 while(continue_flag):
                     traverse_response = send_request(date=date, after = next_page_cursor, username=username, token=token)
+                    request_count += 1
                     if traverse_response != None:
+                        retry_count = 0
                         repos = traverse_response['data']['search']['edges'] #list of repositories
                         page_info = traverse_response['data']['search']['pageInfo'] #page info (to find if more results exist)
                         #Iterate over repository list
@@ -179,10 +189,17 @@ if __name__ == '__main__':
                             continue_flag = False
                     else:
                         error_count += 1
-                        continue_flag = False
-                    time.sleep(0.7)
-        else:
-          error_count += 1
+                        retry_count += 1
+                        #if number of retrying request > 3 then move to the next date
+                        if retry_count > 3:
+                          continue_flag = False
+                    time.sleep(0.3)
+          else:
+            retry_count += 1
+            error_count += 1
+            #if number of retrying request > 3 then move to the next date
+            if retry_count > 3:
+              continue_flag = False
         print("Finish request(s) for date: %s" %date)
 
     print("Job Finished with %d total number of request, with %d error response" %(request_count, error_count))
