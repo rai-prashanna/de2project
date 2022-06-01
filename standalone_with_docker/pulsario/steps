@@ -1,0 +1,36 @@
+docker run -d -p 27017-27019:27017-27019 --name mongodb mongo
+docker exec -it mongodb mongo
+
+use prashanna;
+db.example.save({ firstname: "prashanna", lastname: "rai"})
+
+docker run -d -p 6650:6650 -p 8080:8080 -v $PWD/data:/pulsar/data --name pulsar --link mongodb apachepulsar/pulsar-standalone
+
+docker run -d -p 8081:8081 -e ME_CONFIG_MONGODB_SERVER=mongodb -e ME_CONFIG_MONGODB_PORT=27017 --name mongo-express --link mongodb mongo-express:latest
+
+docker exec -it pulsar bash
+
+apt-get update && apt-get install nano --fix-missing -y
+nano /pulsar/examples/mongodb-sink.yml
+
+/pulsar/bin/pulsar-admin sink create --sink-type mongo --sink-config-file /pulsar/examples/mongodb-sink.yml --inputs test-mongo
+
+
+tenant: "public"
+namespace: "default"
+name: "mongo-test-sink"
+configs:
+    mongoUri: "mongodb://mongodb:27017/admin"
+    database: "prashanna"
+    collection: "example"
+    batchSize: 1
+    batchTimeMs: 1000
+
+/pulsar/bin/pulsar-admin sink create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs test-mongo
+
+/pulsar/bin/pulsar-client produce -m "{firstname: \"P\", lastname: \"RAI\"}" -s % -n 10 test-mongo
+
+
+/pulsar/bin/pulsar-admin sink available-sinks
+/pulsar/bin/pulsar-admin sink list
+/pulsar/bin/pulsar-admin sink status --name mongo-test-sink

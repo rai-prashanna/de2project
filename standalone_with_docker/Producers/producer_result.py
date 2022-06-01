@@ -3,21 +3,14 @@ from datetime import datetime, timedelta
 import random
 random.seed(datetime.now())
 ​
-<<<<<<< HEAD
-PULSAR_IP = 'localhost' 
-=======
 PULSAR_IP = 'pulsarbroker' 
->>>>>>> 8b7ca440ace8ad0a5d00e5d7cb097ee8a76f4e40
 ​
 if __name__ == '__main__':
 ​
     #Pulsar setup
     client = pulsar.Client('pulsar://' + PULSAR_IP + ':6650')
     producer = client.create_producer('DE2-result')
-<<<<<<< HEAD
-=======
-    
->>>>>>> 8b7ca440ace8ad0a5d00e5d7cb097ee8a76f4e40
+
     #Craft update mesage
     msg = {}
     msg['type'] = 'Q1'
@@ -36,8 +29,4 @@ if __name__ == '__main__':
     producer.send(str(msg).encode('utf-8'))
 ​
     #Destroy pulsar client
-<<<<<<< HEAD
     client.close()
-=======
-    client.close()
->>>>>>> 8b7ca440ace8ad0a5d00e5d7cb097ee8a76f4e40
