@@ -1,8 +1,8 @@
 import pulsar, _pulsar
 import re
 import json
-import socket
 from datetime import datetime
+import time
 
 PULSAR_IP = '192.168.2.139'
 
@@ -54,6 +54,9 @@ if __name__ == '__main__':
                     producer_list.remove(producer_name) #Remove finished producer
                     #If no producer is working
                     if not producer_list:
+                        agg_msg['result'] = language
+                        #Update last time
+                        agg_producer.send(str(agg_msg).encode('utf-8'), properties={'producer': agg_producer_name})
                         continue_flag = False
             else:
                 if producer_name not in producer_list:
@@ -81,6 +84,7 @@ if __name__ == '__main__':
         except:
             consumer.negative_acknowledge(msg)
 
+    time.sleep(1)
     #Send ending signal to aggregation server
     agg_producer.send("finish".encode('utf-8'), properties={'producer': agg_producer_name})
     print("Fisnished all available jobs! Quitting...")
