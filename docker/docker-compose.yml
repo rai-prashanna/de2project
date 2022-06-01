@@ -21,6 +21,14 @@ services:
       - ME_CONFIG_MONGODB_PORT=27017
     ports:
       - 8081:8081
+  frontend:
+    build:
+      context: ./frontend
+    command: python -u app.py
+    ports:
+      - "5000:5000"
+    depends_on:
+      - "mongodb"
 
   pulsarbroker:
     hostname: pulsarbroker
@@ -91,6 +99,19 @@ services:
     volumes:
       - ./consumers:/app
     command: /bin/bash -c "sleep 60 && python /app/q3-consumer.py"
+  
+  test_consumer:
+    build:
+      context: ./consumers
+    depends_on:
+      - pulsarbroker
+    links:
+      - pulsarbroker:pulsarbroker
+    restart: always
+    volumes:
+      - ./consumers:/app
+    command: /bin/bash -c "sleep 60 && python /app/consumer.py"
+
   aggregration:  
     build:
       context: ./aggregation

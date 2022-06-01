@@ -1,6 +1,6 @@
 tenant: "public"
 namespace: "default"
-name: "DE2-agg"
+name: "DE2-result"
 configs:
     mongoUri: "mongodb://mongodb:27017/admin"
     database: "aggregation"

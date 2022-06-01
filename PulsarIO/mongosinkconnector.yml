@@ -1,0 +1,6 @@
+configs:
+    mongoUri: "mongodb://localhost:27017"
+    database: "q1"
+    collection: "lang"
+    batchSize: 1
+    batchTimeMs: 1000

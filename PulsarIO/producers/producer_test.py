@@ -9,7 +9,8 @@ if __name__ == '__main__':
 ​
     #Pulsar setup
     client = pulsar.Client('pulsar://' + PULSAR_IP + ':6650')
-    producer = client.create_producer('DE2-result')
+    producer = client.create_producer('DE2-pulsario')
+    
     #Craft update mesage
     msg = {}
     msg['type'] = 'Q1'
@@ -22,8 +23,6 @@ if __name__ == '__main__':
     language['TESTING'] = random.randint(0,300)
 ​
     msg['result'] = language
-    now = datetime.now().strftime("%Y/%m/%d,%H:%M:%S")
-    msg['timestamp'] = now
 ​
     producer.send(str(msg).encode('utf-8'))
 ​
