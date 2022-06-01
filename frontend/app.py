@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import (Flask, jsonify, Markup, render_template)
 import pymongo
 from pymongo import MongoClient
 
@@ -20,9 +20,10 @@ def ping_server():
 @app.route('/languages')
 def get_stored_animals():
     db = get_db()
-    _q1 = db.lang.find()
-    q1 = [{"id": q1["id"], "python": q1["python"], "java": q1["java"], "c":q1["c"]} for q1 in _q1]
-    return jsonify({"Q1": q1})
+    for object in db.lang.find():
+        object = object
+        exit
+    return render_template('result_q1.html', object=object)
 
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=5000)
