@@ -30,7 +30,7 @@ if __name__ == '__main__':
     #Pulsar setup
     client = pulsar.Client('pulsar://' + PULSAR_IP + ':6650')
     consumer = client.subscribe('DE2-agg', subscription_name='DE-agg', consumer_type=_pulsar.ConsumerType.Exclusive)
-    
+    producer = client.create_producer('DE2-result')    
     ##List of producers to the listening topic
     producer_list = []
     #Q1 list:
@@ -45,6 +45,8 @@ if __name__ == '__main__':
     #Q4 list:
     Q4_part = {}
     Q4_final = {}
+
+    update_msg = {}
 
     start_time = None
 
@@ -74,6 +76,8 @@ if __name__ == '__main__':
                     print("[%s] New producer: %s" %(now, producer_name))
                     producer_list.append(producer_name)
                 
+                update_msg['type'] = update['type']
+                update_msg['timestamp'] = now
                 update = json.loads(content)
                 #Question 1
                 if update['type'] == 'Q1':
@@ -85,6 +89,7 @@ if __name__ == '__main__':
                     print("**********************************")
                     print("[%s]Update >> Current result for Q1:" %now)
                     print(Q1_final)
+                    update_msg['result'] = Q1_final
                 #Question 2
                 elif update['type'] == 'Q2':
                     #Update to part list
@@ -94,6 +99,7 @@ if __name__ == '__main__':
                     print("**********************************")
                     print("[%s]Update >> Current result for Q2:" %now)
                     print(Q2_final)
+                    update_msg['result'] = Q2_final
                 #Question 3
                 elif update['type'] == 'Q3':
                     #Update to part list
@@ -104,6 +110,7 @@ if __name__ == '__main__':
                     print("**********************************")
                     print("[%s]Update >> Current result for Q3:" %now)
                     print(Q3_final)
+                    update_msg['result'] = Q3_final
                 #Question 4
                 elif update['type'] == 'Q4':
                     #Update to part list
@@ -114,8 +121,11 @@ if __name__ == '__main__':
                     print("**********************************")
                     print("[%s]Update >> Current result for Q4:" %now)
                     print(Q4_final)
-                else:
-                    pass
+                    update_msg['result'] = Q4_final
+                
+                #Send to final topic for pulsarIO
+                producer.send(str(update_msg).encode('utf-8'))
+                
             consumer.acknowledge(msg)
         except:
             consumer.negative_acknowledge(msg)
@@ -133,5 +143,6 @@ if __name__ == '__main__':
     print("Total amount of processing time: ", (datetime.now() - start_time).seconds ," seconds")
     
     # Destroy pulsar client
+    producer.close()
     consumer.close()
     client.close()
