@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Git Stream Analytic Tool: Question 1</title>
+<title>Git Stream Analytic Tool</title>
 </head>
 <body>
 
-<h1>The most used languages in Repos are:</h1>
+<h1>The results of Question {{result['type']}} | Last update {{result['timestamp']}}</h1>
 <table BORDER=1>
 <thead>
 <tr>
@@ -13,9 +13,11 @@
 </tr>
 </thead>
 <tbody>
+{% for language, count in result['result'].items() %}
 <tr>
-<td>{{object['result']}}</td><td>Python</td> 
+<td>{{ count }}</td><td>{{ language }}</td>
 </tr>
+{% endfor %} 
 </tbody>
 </table>
 

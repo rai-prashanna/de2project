@@ -30,18 +30,16 @@ services:
       - "5000:5000"
     volumes:
       - .:/app
-    links:
-      - mongodb
     depends_on:
       - "mongodb"
 
   pulsarbroker:
     hostname: pulsarbroker
-    image: apachepulsar/pulsar:2.7.0
+    image: apachepulsar/pulsar-standalone
     ports:
       - "6650:6650"
       - "8080:8080"
-    command: bin/pulsar standalone
+    command: pulsar/bin/pulsar standalone
   
   producer:
     build: 
