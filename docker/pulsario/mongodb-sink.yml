@@ -1,10 +1,10 @@
 tenant: "public"
 namespace: "default"
-name: "mongo-prashanna"
+name: "DE2-agg"
 configs:
     mongoUri: "mongodb://mongodb:27017/admin"
-    database: "prashanna"
-    collection: "example"
+    database: "aggregation"
+    collection: "aggregation"
     batchSize: 1
     batchTimeMs: 1000
 
