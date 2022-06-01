@@ -136,13 +136,16 @@ if __name__ == '__main__':
     #Pulsar setup
     client = pulsar.Client('pulsar://' + PULSAR_IP + ':6650')
     producer = client.create_producer('DE2-repo')
+    agg_producer = client.create_producer('DE2-agg')
+    producer_name = producer.producer_name()
+    agg_producer.send('start'.encode('utf-8'), properties={'producer': producer_name})
     
     #Github authentication
     username = args[0]
     token = args[1]
 
     start_date = datetime(2021,1,1)
-    period = 5; #search for 'period' days from start_date
+    period = 2; #search for 'period' days from start_date
 
     request_count = 0
     error_count = 0
@@ -164,7 +167,7 @@ if __name__ == '__main__':
             #Iterate over repository list
             for repo in repos:
                 msg = str(repo['node']).replace("'", '"')
-                producer.send(msg.encode('utf-8'))
+                producer.send(msg.encode('utf-8'), properties={'producer': producer_name})
             
             #Check if more results exists
             if page_info['hasNextPage'] == True:
@@ -181,7 +184,7 @@ if __name__ == '__main__':
                         #Iterate over repository list
                         for repo in repos:
                             msg = str(repo['node']).replace("'", '"')
-                            producer.send(msg.encode('utf-8'))
+                            producer.send(msg.encode('utf-8'), properties={'producer': producer_name})
                         #Continue if still have more results
                         if page_info['hasNextPage'] == True:
                             next_page_cursor = page_info['endCursor']
@@ -203,7 +206,10 @@ if __name__ == '__main__':
         print("Finish request(s) for date: %s" %date)
 
     print("Job Finished with %d total number of request, with %d error response" %(request_count, error_count))
-    #Send ending signal to consumer
-    # producer.send('end-here'.encode('utf-8'))
+    time.sleep(3)
+    #Send ending signal
+    for i in range(5):
+        producer.send('finish'.encode('utf-8'), properties={'producer': producer_name})
     #Destroy pulsar client
+    producer.close()
     client.close()
