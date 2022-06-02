@@ -123,7 +123,7 @@ if __name__ == '__main__':
                     update_msg['result'] = Q4_final
                 
                 #Send to final topic for pulsarIO
-                producer.send(str(update_msg).encode('utf-8'))
+            producer.send(str(update_msg).encode('utf-8'))
                 
             consumer.acknowledge(msg)
         except:
