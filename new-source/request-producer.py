@@ -112,19 +112,22 @@ def send_request(date=None, after=None, username=None, token=None):
     variables['queryString'] = "created:"+ date +" sort:stars-desc"
     variables['numRepos'] = 40 #Number of repos in a response
     #getting the first page
-    if after == None:
-        response = requests.post('https://api.github.com/graphql', json={'query': first_query, 'variables': variables}, auth = auth)
-    #traverse to next page
-    else:
-        variables['previousCursor'] = after
-        response = requests.post('https://api.github.com/graphql', json={'query': secondary_query, 'variables': variables}, auth = auth)
+    try:
+      if after == None:
+          response = requests.post('https://api.github.com/graphql', json={'query': first_query, 'variables': variables}, auth = auth)
+      #traverse to next page
+      else:
+          variables['previousCursor'] = after
+          response = requests.post('https://api.github.com/graphql', json={'query': secondary_query, 'variables': variables}, auth = auth)
 
-    #Check response
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print("Error searching repository for created date: %s with following message: %s" %(date, response.json()))
-        return None
+      #Check response
+      if response.status_code == 200:
+          return response.json()
+      else:
+          print("Error searching repository for created date: %s with following message: %s" %(date, response.json()))
+          return None
+    except:
+      print("ERROR sending request!!!!!")
 
 if __name__ == '__main__':
     #Validate program arguments
