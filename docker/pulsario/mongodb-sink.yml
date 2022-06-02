@@ -1,10 +1,10 @@
 tenant: "public"
 namespace: "default"
-name: "DE2-agg"
+name: "DE2-result"
 configs:
     mongoUri: "mongodb://mongodb:27017/admin"
-    database: "aggregation"
-    collection: "aggregation"
+    database: "result"
+    collection: "result"
     batchSize: 1
     batchTimeMs: 1000
 

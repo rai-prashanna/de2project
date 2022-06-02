@@ -139,7 +139,7 @@ if __name__ == '__main__':
     print("--------------Q4--------------")
     print(Q4_final)
     print("------------------------------")
-    print("Total amount of processing time: ", (datetime.now() - start_time).seconds ," seconds")
+    #print("Total amount of processing time: ", (datetime.now() - start_time).seconds ," seconds")
     
     # Destroy pulsar client
     producer.close()

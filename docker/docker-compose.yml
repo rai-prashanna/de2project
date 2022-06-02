@@ -1,24 +1,24 @@
 version: "3.3"
 services:
-  # mongodb:
-  #   image: mongo:latest
-  #   ports:
-  #     - 27017:27017
-  #     - 27018:27018
-  #     - 27019:27019
-  #   command: mongod 
-  #   # deploy:
-  #   #   replicas: 1
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+      - 27018:27018
+      - 27019:27019
+    command: mongod 
+    # deploy:
+    #   replicas: 1
 
-  # mongo-express:
-  #   image: mongo-express:latest
-  #   depends_on:
-  #     - "mongodb"
-  #   environment:
-  #     - ME_CONFIG_MONGODB_SERVER=mongodb
-  #     - ME_CONFIG_MONGODB_PORT=27017
-  #   ports:
-  #     - 8081:8081
+  mongo-express:
+    image: mongo-express:latest
+    depends_on:
+      - "mongodb"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+    ports:
+      - 8081:8081
     # deploy:
     #   replicas: 3
 
