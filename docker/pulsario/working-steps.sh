@@ -1,4 +1,4 @@
-
+docker exec pulsarbroker /pulsar/bin/pulsar-admin sink create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-agg
 
 /pulsar/bin/pulsar-admin sink create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs test-mongo
 
