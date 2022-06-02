@@ -21,14 +21,12 @@ query ($queryString: String!, $numRepos: Int!) {
             name
           }
           nameWithOwner
-          refs(first: 100, refPrefix: "refs/heads/") {
-            nodes {
-              name
-              target {
-                ... on Commit {
-                  history {
-                    totalCount
-                  }
+          defaultBranchRef {
+            name
+            target {
+              ... on Commit {
+                history {
+                  totalCount
                 }
               }
             }
@@ -71,14 +69,12 @@ query ($queryString: String!, $previousCursor: String!, $numRepos: Int!) {
             name
           }
           nameWithOwner
-          refs(first: 100, refPrefix: "refs/heads/") {
-            nodes {
-              name
-              target {
-                ... on Commit {
-                  history {
-                    totalCount
-                  }
+          defaultBranchRef {
+            name
+            target {
+              ... on Commit {
+                history {
+                  totalCount
                 }
               }
             }

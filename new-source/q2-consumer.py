@@ -72,10 +72,7 @@ if __name__ == '__main__':
                 #Check if repo already exists in list
                 if(repo_name in repo_list):
                     continue
-                n_commits = 0
-                #count total of commits from all branches
-                for branch in list(repo['commit_count']):
-                    n_commits += branch['target']['history']['totalCount']
+                n_commits = repo['commit_count']
                 #Find position for new repo in the list
                 repo_pos = find_position(repo_commits, n_commits)
                 #If not in top highest commits, do nothing
