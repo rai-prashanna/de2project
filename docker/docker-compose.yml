@@ -60,6 +60,7 @@ services:
     volumes:
       - ./consumers:/app
     command: /bin/bash -c "sleep 60 && python /app/q1-consumer.py"
+    #command: /bin/bash -c "sleep 2000000"
   q2consumer:
     build:
       context: ./consumers
@@ -79,15 +80,16 @@ services:
     volumes:
       - ./consumers:/app
     command: /bin/bash -c "sleep 60 && python /app/q3-consumer.py"
-
+    #command: /bin/bash -c "sleep 2000000"
   q4consumer:
     build:
-      context: ./consumers
+     context: ./consumers
     depends_on:
       - pulsarbroker  
     volumes:
       - ./consumers:/app
     command: /bin/bash -c "sleep 60 && python /app/q4-consumer.py"
+    #command: /bin/bash -c "sleep 2000000"
   aggregation:  
     build:
       context: ./aggregation
@@ -95,5 +97,6 @@ services:
       - pulsarbroker
     volumes:
       - ./aggregation:/app
+    #command: /bin/bash -c "sleep 2000000"
     command: /bin/bash -c "sleep 200 && python app/agg-server.py" 
 

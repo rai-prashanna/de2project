@@ -75,10 +75,9 @@ if __name__ == '__main__':
                 if producer_name not in producer_list:
                     print("[%s] New producer: %s" %(now, producer_name))
                     producer_list.append(producer_name)
-                
+                update = json.loads(content)
                 update_msg['type'] = update['type']
                 update_msg['timestamp'] = now
-                update = json.loads(content)
                 #Question 1
                 if update['type'] == 'Q1':
                     #Update to part list

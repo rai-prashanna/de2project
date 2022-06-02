@@ -1,4 +1,4 @@
-FROM python:3.7.13-bullseye
+FROM python:3.8.10
 RUN mkdir -p /app
 ADD requirements.txt /app 
 RUN cd /app
