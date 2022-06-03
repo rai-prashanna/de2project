@@ -36,7 +36,7 @@ if __name__ == '__main__':
                     #If no producer is working
                     if not producer_list:
                         agg_msg['result'] = language
-                        #Update last time
+                        #Update the latest result to the aggregation server
                         agg_producer.send(str(agg_msg).encode('utf-8'), properties={'producer': agg_producer_name})
                         continue_flag = False
             else:

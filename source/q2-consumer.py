@@ -58,7 +58,7 @@ if __name__ == '__main__':
                     producer_list.remove(producer_name) #Remove finished producer
                     #If no producer is working
                     if not producer_list:
-                        #Update last time
+                        #Update the latest result to the aggregation server
                         agg_msg['result'] = dict(zip(repo_list, repo_commits))
                         agg_producer.send(str(agg_msg).encode('utf-8'), properties={'producer': agg_producer_name})
                         continue_flag = False

@@ -44,16 +44,16 @@ if __name__ == '__main__':
     producer = client.create_producer('DE2-result')    
     ##List of producers to the listening topic
     producer_list = []
-    #Q1 list:
+    #Q1 lists:
     Q1_part = {}
     Q1_final = {}
-    #Q2 list:
+    #Q2 lists:
     Q2_part = {}
     Q2_final = {}
-    #Q3 list:
+    #Q3 lists:
     Q3_part = {}
     Q3_final = {}
-    #Q4 list:
+    #Q4 lists:
     Q4_part = {}
     Q4_final = {}
 
