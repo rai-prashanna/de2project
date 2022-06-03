@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Git Stream Analytic Tool</title>
+</head>
+<body>
+
+<h1>The results of Question {{result['type']}} | Last update {{result['timestamp']}}</h1>
+<table BORDER=1>
+<thead>
+<tr>
+<th>Occurence</th><th>Language</th>
+</tr>
+</thead>
+<tbody>
+{% for language, count in result['result'].items() %}
+<tr>
+<td>{{ count }}</td><td>{{ language }}</td>
+</tr>
+{% endfor %} 
+</tbody>
+</table>
+
+
+</body>
+</html>
