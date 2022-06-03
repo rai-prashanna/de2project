@@ -128,8 +128,8 @@ def send_request(date=None, after=None, username=None, token=None):
 if __name__ == '__main__':
     #Validate program arguments
     args = sys.argv[1:]
-    if len(args) != 2:
-        print("Program requires 2 input args: github-username and token!")
+    if len(args) != 4:
+        print("Program requires 4 input args: github-username , token, start_date(Y-m-d) and end_date (Y-m-d)!")
         sys.exit(1)
 
     #Pulsar setup
@@ -143,15 +143,16 @@ if __name__ == '__main__':
     username = args[0]
     token = args[1]
 
-    start_date = datetime(2021,1,1)
-    period = 2; #search for 'period' days from start_date
+    start_date = datetime.strptime(args[2], '%Y-%m-%d')
+    end_date = datetime.strptime(args[3], '%Y-%m-%d')
+    period = (end_date - start_date).days + 1
 
     request_count = 0
     error_count = 0
     retry_count = 0
 
     #iterate over days in period
-    for i in range(0, period):
+    for i in range(0, int(period)):
         retry_count = 0 #reset retry count
         date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
         continue_flag = True

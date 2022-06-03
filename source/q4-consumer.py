@@ -6,19 +6,38 @@ import time
 
 PULSAR_IP = '192.168.2.139'
 
-keywords = ['cicd', '.gitlab-ci.yml', '.travis', '.circleci', 'Jenkinsfile' ]
-regex_expression = '(\s|^|\W|\d)' + "|".join(map(re.escape, keywords)) + '(\s|$|\W|\d)'
+unit_test_keywords = ['test', 'spec']
+unit_test_regex = '(\s|^|\W|\d)' + "|".join(map(re.escape, unit_test_keywords)) + '(\s|$|\W|\d)'
+
+cicd_keywords = ['cicd', '.gitlab-ci.yml', '.travis', '.circleci', 'Jenkinsfile' ]
+cicd_regex = '(\s|^|\W|\d)' + "|".join(map(re.escape, cicd_keywords)) + '(\s|$|\W|\d)'
 
 def has_unit_test(list = list):
     for unit in list:
         #search for pattern in its name
-        if re.search(regex_expression, unit['name'], re.IGNORECASE):
+        if re.search(unit_test_regex, unit['name'], re.IGNORECASE):
             return 1
         #If being directory -> search inside
         if unit['type'] == "tree":
             sub_dir = unit['object']['entries']
             for sub_unit in sub_dir:
-                if re.search(regex_expression, sub_unit['name'], re.IGNORECASE):
+                if re.search(unit_test_regex, sub_unit['name'], re.IGNORECASE):
+                    return 1
+                if unit['name'] == '.github' and sub_unit['name'] == 'workflows':
+                    return 1
+    return 0
+
+
+def has_cicd(list = list):
+    for unit in list:
+        #search for pattern in its name
+        if re.search(cicd_regex, unit['name'], re.IGNORECASE):
+            return 1
+        #If being directory -> search inside
+        if unit['type'] == "tree":
+            sub_dir = unit['object']['entries']
+            for sub_unit in sub_dir:
+                if re.search(cicd_regex, sub_unit['name'], re.IGNORECASE):
                     return 1
                 if unit['name'] == '.github' and sub_unit['name'] == 'workflows':
                     return 1
@@ -68,7 +87,7 @@ if __name__ == '__main__':
                 repo = json.loads(content)
                 repo_language = repo['language']
                 file_list = repo['file_list']
-                if has_unit_test(file_list):
+                if has_unit_test(file_list) and has_cicd(file_list):
                     if repo_language in language.keys():
                         language[repo_language] += 1
                     else:
