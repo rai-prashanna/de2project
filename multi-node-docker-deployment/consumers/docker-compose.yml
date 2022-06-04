@@ -1,0 +1,39 @@
+version: "3.3"
+services:
+  q1consumer:
+    build:
+      context: ./consumers 
+    environment:
+      - GET_HOSTS_FROM=dns
+    volumes:
+      - ./consumers:/app
+    command: /bin/bash -c "sleep 80 && python /app/q1-consumer.py"
+    #command: /bin/bash -c "sleep 2000000"
+  q2consumer:
+    build:
+      context: ./consumers 
+    environment:
+      - GET_HOSTS_FROM=dns
+    volumes:
+      - ./consumers:/app
+    #command: /bin/bash -c "sleep 2000000"
+    command: /bin/bash -c "sleep 80 && python /app/q2-consumer.py 10"
+    # deploy:
+    #   replicas: 1
+  q3consumer:
+    build:
+      context: ./consumers 
+    environment:
+      - GET_HOSTS_FROM=dns
+    volumes:
+      - ./consumers:/app
+    command: /bin/bash -c "sleep 80 && python /app/q3-consumer.py"
+    #command: /bin/bash -c "sleep 2000000"
+  q4consumer:
+    build:
+     context: ./consumers
+    environment:
+      - GET_HOSTS_FROM=dns
+    volumes:
+      - ./consumers:/app
+    command: /bin/bash -c "sleep 80 && python /app/q4-consumer.py"
