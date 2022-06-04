@@ -5,4 +5,4 @@ services:
       context: .
     environment:
       - GET_HOSTS_FROM=dns
-    command: /bin/bash -c "sleep 200 && python /app/agg-server.py 10 15 20 25" 
+    command: /bin/bash -c "sleep 200 && python /app/agg-server.py <N-th-top-Q1> <N-th-top-Q2> <N-th-top-Q3> <N-th-top-Q4>" 
