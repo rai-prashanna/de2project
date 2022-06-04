@@ -41,8 +41,7 @@ services:
       - pulsarbroker  
     volumes:
       - ./producers:/app
-    command: /bin/bash -c "sleep 80 && python /app/request-producer.py rai-prashanna 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"
-
+    command: /bin/bash -c "sleep 80 && python /app/request-producer.py rai-prashanna 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 2021-01-01 2021-01-31"
   filter:
     build:
       context: ./filter
@@ -97,7 +96,7 @@ services:
     volumes:
       - ./aggregation:/app
     #command: /bin/bash -c "sleep 2000000"
-    command: /bin/bash -c "sleep 200 && python /app/agg-server.py" 
+    command: /bin/bash -c "sleep 200 && python /app/agg-server.py 10 15 20 25" 
 
   app:  
     build:

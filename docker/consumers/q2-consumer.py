@@ -58,7 +58,7 @@ if __name__ == '__main__':
                     producer_list.remove(producer_name) #Remove finished producer
                     #If no producer is working
                     if not producer_list:
-                        #Update last time
+                        #Update the latest result to the aggregation server
                         agg_msg['result'] = dict(zip(repo_list, repo_commits))
                         agg_producer.send(str(agg_msg).encode('utf-8'), properties={'producer': agg_producer_name})
                         continue_flag = False
@@ -72,10 +72,7 @@ if __name__ == '__main__':
                 #Check if repo already exists in list
                 if(repo_name in repo_list):
                     continue
-                n_commits = 0
-                #count total of commits from all branches
-                for branch in list(repo['commit_count']):
-                    n_commits += branch['target']['history']['totalCount']
+                n_commits = repo['commit_count']
                 #Find position for new repo in the list
                 repo_pos = find_position(repo_commits, n_commits)
                 #If not in top highest commits, do nothing

@@ -6,9 +6,11 @@ import time
 
 PULSAR_IP = 'pulsarbroker'
 
+#keywords used to search filename for unit-test pattern
 keywords = ['test', 'spec']
 regex_expression = '(\s|^|\W|\d)' + "|".join(map(re.escape, keywords)) + '(\s|$|\W|\d)'
 
+#check if a file list containing file belonging to testing
 def has_unit_test(list = list):
     for unit in list:
         #search for pattern in its name
@@ -55,7 +57,7 @@ if __name__ == '__main__':
                     #If no producer is working
                     if not producer_list:
                         agg_msg['result'] = language
-                        #Update last time
+                        #Update the latest result to the aggregation server
                         agg_producer.send(str(agg_msg).encode('utf-8'), properties={'producer': agg_producer_name})
                         continue_flag = False
             else:

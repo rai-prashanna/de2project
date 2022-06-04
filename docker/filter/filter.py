@@ -65,7 +65,7 @@ if __name__ == '__main__':
                 #Extract name/commit count list and craft message for commit topic
                 commit_msg = {}
                 commit_msg['name'] = repo['nameWithOwner']
-                commit_msg['commit_count'] = repo['refs']['nodes']
+                commit_msg['commit_count'] = repo['defaultBranchRef']['target']['history']['totalCount']
                 commit_producer.send(str(commit_msg).encode('utf-8'), properties={'producer': commit_producer_name})
                 send_count += 1
 

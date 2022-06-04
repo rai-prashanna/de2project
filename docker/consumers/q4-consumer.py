@@ -6,19 +6,39 @@ import time
 
 PULSAR_IP = 'pulsarbroker'
 
-keywords = ['cicd', '.gitlab-ci.yml', '.travis', '.circleci', 'Jenkinsfile' ]
-regex_expression = '(\s|^|\W|\d)' + "|".join(map(re.escape, keywords)) + '(\s|$|\W|\d)'
+#keywords used to search filename for unit-test pattern
+unit_test_keywords = ['test', 'spec']
+unit_test_regex = '(\s|^|\W|\d)' + "|".join(map(re.escape, unit_test_keywords)) + '(\s|$|\W|\d)'
 
+#keywords used to search filename for CICD pattern
+cicd_keywords = ['cicd', '.gitlab-ci.yml', '.travis', '.circleci', 'Jenkinsfile' ]
+cicd_regex = '(\s|^|\W|\d)' + "|".join(map(re.escape, cicd_keywords)) + '(\s|$|\W|\d)'
+
+#check if a file list containing file belonging to testing
 def has_unit_test(list = list):
     for unit in list:
         #search for pattern in its name
-        if re.search(regex_expression, unit['name'], re.IGNORECASE):
+        if re.search(unit_test_regex, unit['name'], re.IGNORECASE):
             return 1
         #If being directory -> search inside
         if unit['type'] == "tree":
             sub_dir = unit['object']['entries']
             for sub_unit in sub_dir:
-                if re.search(regex_expression, sub_unit['name'], re.IGNORECASE):
+                if re.search(unit_test_regex, sub_unit['name'], re.IGNORECASE):
+                    return 1
+    return 0
+
+#check if a file list containing file belonging to CICD
+def has_cicd(list = list):
+    for unit in list:
+        #search for pattern in its name
+        if re.search(cicd_regex, unit['name'], re.IGNORECASE):
+            return 1
+        #If being directory -> search inside
+        if unit['type'] == "tree":
+            sub_dir = unit['object']['entries']
+            for sub_unit in sub_dir:
+                if re.search(cicd_regex, sub_unit['name'], re.IGNORECASE):
                     return 1
                 if unit['name'] == '.github' and sub_unit['name'] == 'workflows':
                     return 1
@@ -57,7 +77,7 @@ if __name__ == '__main__':
                     #If no producer is working
                     if not producer_list:
                         agg_msg['result'] = language
-                        #Update last time
+                        #Update the latest result to the aggregation server
                         agg_producer.send(str(agg_msg).encode('utf-8'), properties={'producer': agg_producer_name})
                         continue_flag = False
             else:
@@ -68,7 +88,7 @@ if __name__ == '__main__':
                 repo = json.loads(content)
                 repo_language = repo['language']
                 file_list = repo['file_list']
-                if has_unit_test(file_list):
+                if has_unit_test(file_list) and has_cicd(file_list):
                     if repo_language in language.keys():
                         language[repo_language] += 1
                     else:
