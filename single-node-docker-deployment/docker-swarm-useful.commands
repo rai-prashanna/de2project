@@ -1,0 +1,36 @@
+docker swarm init --advertise-addr 192.168.2.193
+docker swarm join-token --quiet worker
+
+ssh 192.168.2.253 "docker swarm join --token SWMTKN-1-3oapgmztr5atfeh8f2rjk13m874om0qtec7j5lgdd5nxi5tlhd-6lbenjw2jin1bxko33x48onms 192.168.2.193:2377"
+
+docker network create --driver=overlay prashanna-net
+docker service create -p 80:80 --name swarm-nginx --replicas 3 --network prashanna-net fsoppelsa/swarm-nginx
+
+docker stack deploy --compose-file docker-compose.yml --network prashanna-net project
+docker stack deploy --compose-file docker-compose.yml project
+
+docker stack deploy --compose-file docker-compose.yml multi-tier-app
+
+docker run -it --rm -d -p 8080:80 --name web -v ~/site-content:/usr/share/nginx/html nginx
+
+docker volume create --name  hello
+docker service create \
+   --name hello-world \
+   --mount src=hello,dst=/hello,volume-label="msg=hello",volume-label="msg2=world" \
+   --publish 8080:80 \
+   --replicas 2 \
+   tutum/hello-world
+
+DEPLOY_ENV=dev docker stack deploy --compose-file docker-compose.yml greetings_dev
+
+docker service logs --follow multi-tier-app_api
+docker service ls \
+--format "table {{.Name}} {{.Mode}} {{.Replicas}}"
+docker secret ls --format "table {{.ID}} {{.Name}} {{.CreatedAt}}"
+
+
+docker stack deploy --compose-file docker-compose.yml project
+
+docker stack rm project
+docker stack ps project
+docker stack ls
