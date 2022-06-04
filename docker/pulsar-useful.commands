@@ -19,6 +19,6 @@ pulsar-admin tenants list
 ./pulsar-admin topics peek-messages --count 10 --subscription C1-sub persistent://public/default/
 
 
-./pulsar-admin topics peek-messages --count 10 --subscription Q1 persistent://public/default/DE2-commit
+./pulsar-admin topics peek-messages --count 10 --subscription Q1 persistent://public/default/DE2-result
 
 ./pulsar-admin topics delete "persistent://public/default/Q1" --force

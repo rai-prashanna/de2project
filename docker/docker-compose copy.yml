@@ -19,6 +19,8 @@ services:
       - 27017:27017
       - 27018:27018
       - 27019:27019
+    deploy:
+      replicas: 2
     command: mongod  
     # deploy:
     #   replicas: 1
@@ -26,9 +28,12 @@ services:
   mongo-express:
     image: mongo-express:latest
     networks:
-      - public   
+      - public 
+      - private  
     depends_on:
       - "mongodb"
+    deploy:
+      replicas: 1
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongodb
       - ME_CONFIG_MONGODB_PORT=27017
@@ -49,6 +54,8 @@ services:
     command: /pulsar/bin/pulsar standalone
     volumes:
       - $PWD/pulsario/:/home
+    deploy:
+      replicas: 1    
     healthcheck:
       test: "curl -s --fail http://localhost:8080/admin/v2/brokers/health"
 
@@ -59,6 +66,8 @@ services:
       - pulsarbroker  
     volumes:
       - ./producers:/app
+    deploy:
+      replicas: 1
     command: /bin/bash -c "sleep 60 && python app/request-producer.py rai-prashanna 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"
 
   filter:
@@ -68,6 +77,8 @@ services:
       - pulsarbroker  
     volumes:
       - ./filter:/app
+    deploy:
+      replicas: 1
     command: /bin/bash -c "sleep 60 && python /app/filter.py"
   q1consumer:
     build:
@@ -76,6 +87,8 @@ services:
       - pulsarbroker  
     volumes:
       - ./consumers:/app
+    deploy:
+      replicas: 1
     command: /bin/bash -c "sleep 60 && python /app/q1-consumer.py"
     #command: /bin/bash -c "sleep 2000000"
   q2consumer:
@@ -86,6 +99,8 @@ services:
     volumes:
       - ./consumers:/app
     #command: /bin/bash -c "sleep 2000000"
+    deploy:
+      replicas: 1
     command: /bin/bash -c "sleep 60 && python /app/q2-consumer.py 10"
     # deploy:
     #   replicas: 1
@@ -96,6 +111,8 @@ services:
       - pulsarbroker  
     volumes:
       - ./consumers:/app
+    deploy:
+      replicas: 1
     command: /bin/bash -c "sleep 60 && python /app/q3-consumer.py"
     #command: /bin/bash -c "sleep 2000000"
   q4consumer:
@@ -105,6 +122,8 @@ services:
       - pulsarbroker  
     volumes:
       - ./consumers:/app
+    deploy:
+      replicas: 1
     command: /bin/bash -c "sleep 60 && python /app/q4-consumer.py"
     #command: /bin/bash -c "sleep 2000000"
   aggregation:  
@@ -113,5 +132,7 @@ services:
       - pulsarbroker
     volumes:
       - ./aggregation:/app
+    deploy:
+      replicas: 1
     #command: /bin/bash -c "sleep 2000000"
 
