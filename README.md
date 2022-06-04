@@ -3,28 +3,53 @@ This repository is part of the Data Engineering Course 2 at the Uppsala Universi
 In this repository, we developed a Github analytic system to crawl data, process it, and produce targeted results using the Pulsar streaming framework. 
 
 ## Overview
-.
-├── docker                  # Finaly Version of the implemented approach
-│   ├── aggregation         # Layer3: Aggregation consumer
-│   ├── consumers           # Layer2
-│   ├── filter    
-│   ├── mongo
-│   ├── producers    
-│   ├── pulsario    
-│   ├── cloud-init-lb.yml    
-│   └── docker-compose.yml  # Unit tests
-├── source                     # Source files (alternatively `lib` or `app`)
-├── standalone_with_docker  # Automated tests (alternatively `spec` or `tests`)
-└── README.md
+. <br/>
+├── multi-node-docker-deployment    <br/>
+│   ├── aggregation                <br/>
+│   ├── consumers          <br/>
+│   ├── filter    <br/>
+│   ├── mongo       <br/>
+│   ├── producers   <br/> 
+│   ├── pulsario        <br/>
+│   └── docker-compose.yml  <br/>
+├── single-node-docker-deployment <br/>
+│   ├── aggregation         <br/>
+│   ├── consumers          <br/>
+│   ├── filter    <br/>
+│   ├── mongo<br/>
+│   ├── producers <br/>
+│   ├── pulsario       <br/> 
+│   └── docker-compose.yml  <br/> 
+├── source                        #Pulsar Logic    <br/>
+└── README.md<br/>
+
 
 ## Getting Started
-### Dependencies
 * Pull Repository
 ```
 git pull https://github.com/rai-prashanna/de2project.git
 ```
 * Start docker-compose to 
 ```
-cd docker
+cd single-node-docker-deployment 
+```
+```
 docker-compose up --build
+```
+* Start PulsarIO connection to MongoDB
+```
+docker exec -it single-node-docker-deployment_pulsarbroker_1 /bin/bash
+```
+```
+/pulsar/bin/pulsar-admin sinks create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
+
+```
+### See Results
+* Open Browser and see current results
+```
+http://<ip-address>:5000/
+```
+* See MongoDB for troubleshooting
+```
+http://<ip-address>:8081/
 ```

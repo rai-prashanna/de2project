@@ -5,7 +5,8 @@
 </head>
 <body>
 
-<h1>The results of Question {{result['type']}} | Last update {{result['timestamp']}}</h1>
+<h1>The results of Question {{result['type']}} </h1>
+<h3>Last update {{result['timestamp']}}</h3>
 <table BORDER=1>
 <thead>
 <tr>
@@ -13,9 +14,9 @@
 </tr>
 </thead>
 <tbody>
-{% for language, count in result['result'].items() %}
+{% for name, count in result['result'].items() %}
 <tr>
-<td>{{ count }}</td><td>{{ language }}</td>
+<td>{{ count }}</td><td>{{ name }}</td>
 </tr>
 {% endfor %} 
 </tbody>
