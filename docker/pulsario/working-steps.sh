@@ -1,6 +1,6 @@
 docker exec pulsarbroker /pulsar/bin/pulsar-admin sink create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-agg
 
-docker exec pulsarbroker /pulsar/bin/pulsar-admin sink create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
+docker exec 772dcfb5655a /pulsar/bin/pulsar-admin sink create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
 
 /pulsar/bin/pulsar-client produce -m "{firstname: \"P\", lastname: \"RAI\"}" -s % -n 10 test-mongo
 
