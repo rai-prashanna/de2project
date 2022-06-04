@@ -1,2 +1,0 @@
-pulsar-client==2.7.1
-requests
