@@ -35,6 +35,42 @@ cd single-node-docker-deployment
 docker-compose build --no-cache
 docker-compose up
 ```
+* different producers can be used to fetching data from diferent dates as follows
+```
+edit docker-compose.yml with following contents
+  producer:
+    build:
+      context: ./producers
+    depends_on:
+      - pulsarbroker  
+    volumes:
+      - ./producers:/app
+    command: /bin/bash -c "sleep 80 && python /app/request-producer.py <github-user> <token> 2021-01-01 2021-01-31"
+#create duplicate of producer section to create more instances of producers/wrokers 
+#also change starting date and ending date
+#date should be in format Y-M-D
+  producer2:
+    build:
+      context: ./producers
+    depends_on:
+      - pulsarbroker  
+    volumes:
+      - ./producers:/app
+    command: /bin/bash -c "sleep 80 && python /app/request-producer.py <github-user> <token> 2021-02-01 2021-02-29"
+
+```
+* Note 
+```
+insert your github-user and token
+add proper starting date and ending date. 
+date should be in Y-M.D
+```
+* Start docker instances 
+```
+docker-compose build --no-cache
+docker-compose up
+```
+
 * Start PulsarIO connection to MongoDB
 ```
 docker exec -it single-node-docker-deployment_pulsarbroker_1 /pulsar/bin/pulsar-admin sinks create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
