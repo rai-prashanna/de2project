@@ -44,3 +44,12 @@ docker exec -it single-node-docker-deployment_pulsarbroker_1 /bin/bash
 /pulsar/bin/pulsar-admin sinks create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
 
 ```
+### See Results
+* Open Browser and see current results
+```
+http://<ip-address>:5000/
+```
+* See MongoDB for troubleshooting
+```
+http://<ip-address>:8081/
+```
