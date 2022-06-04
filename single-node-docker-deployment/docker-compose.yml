@@ -7,8 +7,6 @@ services:
       - 27018:27018
       - 27019:27019
     command: mongod 
-    # deploy:
-    #   replicas: 1
 
   mongo-express:
     image: mongo-express:latest
@@ -19,9 +17,6 @@ services:
       - ME_CONFIG_MONGODB_PORT=27017
     ports:
       - 8081:8081
-    # deploy:
-    #   replicas: 3
-
 
   pulsarbroker:
     hostname: pulsarbroker
@@ -69,7 +64,6 @@ services:
     volumes:
       - ./consumers:/app
     command: /bin/bash -c "sleep 80 && python /app/q1-consumer.py"
-    #command: /bin/bash -c "sleep 2000000"
   q2consumer:
     build:
       context: ./consumers
@@ -77,10 +71,7 @@ services:
       - pulsarbroker  
     volumes:
       - ./consumers:/app
-    #command: /bin/bash -c "sleep 2000000"
     command: /bin/bash -c "sleep 80 && python /app/q2-consumer.py 10"
-    # deploy:
-    #   replicas: 1
   q3consumer:
     build:
       context: ./consumers
@@ -89,7 +80,6 @@ services:
     volumes:
       - ./consumers:/app
     command: /bin/bash -c "sleep 80 && python /app/q3-consumer.py"
-    #command: /bin/bash -c "sleep 2000000"
   q4consumer:
     build:
      context: ./consumers
@@ -98,7 +88,6 @@ services:
     volumes:
       - ./consumers:/app
     command: /bin/bash -c "sleep 80 && python /app/q4-consumer.py"
-    #command: /bin/bash -c "sleep 2000000"
   aggregation:  
     build:
       context: ./aggregation
@@ -106,18 +95,16 @@ services:
       - pulsarbroker
     volumes:
       - ./aggregation:/app
-    #command: /bin/bash -c "sleep 2000000"
     command: /bin/bash -c "sleep 200 && python /app/agg-server.py 10 15 20 25" 
 
   app:  
     build:
       context: ./frontend
     depends_on:
-      - pulsarbroker
       - mongodb
     ports:
       - "5000:5000"
     volumes:
       - ./frontend:/app
-    #command: /bin/bash -c "sleep 2000000"
     command: /bin/bash -c "sleep 200 && python -u /app/app.py" 
+    #command: /bin/bash -c "sleep 200000"

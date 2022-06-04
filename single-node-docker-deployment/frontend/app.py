@@ -2,7 +2,7 @@ from flask import (Flask, jsonify, Markup, render_template)
 import pymongo
 from pymongo import MongoClient
 
-app = Flask(__name__, static_folder='static/templates/templates_frontend_home')
+app = Flask(__name__, static_folder="templates")
 
 def get_db():
     client = MongoClient(host='mongodb',
@@ -12,7 +12,7 @@ def get_db():
 
 @app.route('/')
 def ping_server():
-    return render_template('/templates_frontend_home/home.html')
+    return render_template('home.html')
 
 @app.route('/languages')
 def get_data_q1():
