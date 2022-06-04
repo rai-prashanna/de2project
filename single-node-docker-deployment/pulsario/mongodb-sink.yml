@@ -3,13 +3,8 @@ namespace: "default"
 name: "DE2-result"
 configs:
     mongoUri: "mongodb://mongodb:27017/admin"
-<<<<<<< HEAD
-    database: "DE2-result"
-    collection: "DE2-result"
-=======
     database: "aggregation"
     collection: "aggregation"
->>>>>>> 09be0480073c05b8bbf7d062187076936882ebf4
     batchSize: 1
     batchTimeMs: 1000
 
