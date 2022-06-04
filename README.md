@@ -87,9 +87,10 @@ docker-compose up
 docker exec -it single-node-docker-deployment_pulsarbroker_1 /pulsar/bin/pulsar-admin sinks create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
 ```
 ### See Results
-* Open Browser and see current results
+* Open Browser and see current results 
+* Since, ssl secure connection is implemented on flask server. we should use https instead of http
 ```
-http://<ip-address>:5000/
+https://<ip-address>:5000/
 ```
 * See MongoDB to view data from MongoDB-express
 ```
