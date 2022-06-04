@@ -1,11 +1,30 @@
-# de2project
+# GitHub analytic system using the streaming framework Pulsar | Project 2 | Team 11
+This repository is part of the Data Engineering Course 2 at the Uppsala University
+In this repository, we developed a Github analytic system to crawl data, process it, and produce targeted results using the Pulsar streaming framework. 
 
-| Participants  | Question      |
-| ------------- | ------------- |
-| Prashanna     |  Q1: What is the meaning and importance of contextualization and orchestration..... |
-| Duc  |   |
-| Tim            |   Q4.  Explain the role and importance of model serving and CI/CD in today’s data engineering world. Write down the names and briefly explain four frameworks (two for model serving and two for CI/CD) that offer model serving and CI/CD capabilities.   |
+## Overview
+.
+├── docker                  # Finaly Version of the implemented approach
+│   ├── aggregation         # Layer3: Aggregation consumer
+│   ├── consumers           # Layer2
+│   ├── filter    
+│   ├── mongo
+│   ├── producers    
+│   ├── pulsario    
+│   ├── cloud-init-lb.yml    
+│   └── docker-compose.yml  # Unit tests
+├── source                     # Source files (alternatively `lib` or `app`)
+├── standalone_with_docker  # Automated tests (alternatively `spec` or `tests`)
+└── README.md
 
-## link to Seminar Question-Answer doc  
-
-https://docs.google.com/document/d/14PeLxFnCJRw-Ym460YIEAWRnZDy5g6OTcR-QG6flKHE/edit?usp=sharing
+## Getting Started
+### Dependencies
+* Pull Repository
+```
+git pull https://github.com/rai-prashanna/de2project.git
+```
+* Start docker-compose to 
+```
+cd docker
+docker-compose up --build
+```

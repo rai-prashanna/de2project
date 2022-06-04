@@ -1,12 +1,13 @@
 import pulsar, _pulsar
 import operator
+import sys
 import json
 from datetime import datetime
 
 PULSAR_IP = '192.168.2.139'
 
 #aggregation function for Q1 Q3 Q4
-def agg_1(part: dict):
+def agg_1(part: dict, n_top:int):
     final = {}
     #Iterate result of each worker
     for worker, result in part.items():
@@ -15,34 +16,44 @@ def agg_1(part: dict):
                 final[language] += count
             else:
                 final[language] = count
-    return dict(sorted(final.items(), key=operator.itemgetter(1), reverse=True)[0:10])
+    return dict(sorted(final.items(), key=operator.itemgetter(1), reverse=True)[0:n_top])
 
 #aggregation function for Q2
-def agg_2(part: dict):
+def agg_2(part: dict, n_top:int):
     final = {}
     #Iterate result of each worker and merge to the final result
     for worker, result in part.items():
         final.update(result)
     #Sort result and return top 10
-    return dict(sorted(final.items(), key=operator.itemgetter(1), reverse=True)[0:10])
+    return dict(sorted(final.items(), key=operator.itemgetter(1), reverse=True)[0:n_top])
 
 if __name__ == '__main__':
+    #Validate program arguments
+    args = sys.argv[1:]
+    if len(args) != 4:
+        print("Program requires 4 input args!!")
+        sys.exit(1)
+    
+    n_Q1 = int(args[0])
+    n_Q2 = int(args[1])
+    n_Q3 = int(args[2])
+    n_Q4 = int(args[3])
     #Pulsar setup
     client = pulsar.Client('pulsar://' + PULSAR_IP + ':6650')
-    consumer = client.subscribe('DE2-agg', subscription_name='DE-agg', consumer_type=_pulsar.ConsumerType.Exclusive)
+    consumer = client.subscribe('DE2-agg', subscription_name='DE-agg', consumer_type=_pulsar.ConsumerType.Failover)
     producer = client.create_producer('DE2-result')    
     ##List of producers to the listening topic
     producer_list = []
-    #Q1 list:
+    #Q1 lists:
     Q1_part = {}
     Q1_final = {}
-    #Q2 list:
+    #Q2 lists:
     Q2_part = {}
     Q2_final = {}
-    #Q3 list:
+    #Q3 lists:
     Q3_part = {}
     Q3_final = {}
-    #Q4 list:
+    #Q4 lists:
     Q4_part = {}
     Q4_final = {}
 
@@ -83,7 +94,7 @@ if __name__ == '__main__':
                     #Update to part list
                     Q1_part[producer_name] = update['result']
                     #aggregate results
-                    Q1_final = agg_1(Q1_part)
+                    Q1_final = agg_1(Q1_part, n_Q1)
                     #Do smthing with the current updated result
                     print("**********************************")
                     print("[%s]Update >> Current result for Q1:" %now)
@@ -94,7 +105,7 @@ if __name__ == '__main__':
                     #Update to part list
                     Q2_part[producer_name] = update['result']
                     #Aggregate results
-                    Q2_final = agg_2(Q2_part)
+                    Q2_final = agg_2(Q2_part, n_Q2)
                     print("**********************************")
                     print("[%s]Update >> Current result for Q2:" %now)
                     print(Q2_final)
@@ -104,7 +115,7 @@ if __name__ == '__main__':
                     #Update to part list
                     Q3_part[producer_name] = update['result']
                     #aggregate results
-                    Q3_final = agg_1(Q3_part)
+                    Q3_final = agg_1(Q3_part, n_Q3)
                     #Do smthing with the current updated result
                     print("**********************************")
                     print("[%s]Update >> Current result for Q3:" %now)
@@ -115,7 +126,7 @@ if __name__ == '__main__':
                     #Update to part list
                     Q4_part[producer_name] = update['result']
                     #aggregate results
-                    Q4_final = agg_1(Q4_part)
+                    Q4_final = agg_1(Q4_part, n_Q4)
                     #Do smthing with the current updated result
                     print("**********************************")
                     print("[%s]Update >> Current result for Q4:" %now)
