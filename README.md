@@ -29,6 +29,17 @@ In this repository, we developed a Github analytic system to crawl data, process
 ```
 git pull https://github.com/rai-prashanna/de2project.git
 ```
+* change parameters as follows
+```
+<github-user> = your github user account
+<token> = github token
+<start-date> = 2021-01-01
+<end-date> = 2021-01-31
+<N-th-top-Q1> = 10 i.e (top 10 result of Q1)
+<N-th-top-Q2> = 20 i.e (top 20 result of Q2)
+<N-th-top-Q3> = 30 i.e (top 30 result of Q3)
+<N-th-top-Q4> = 40 i.e (top 40 result of Q4)
+```
 * Start docker-compose to 
 ```
 cd single-node-docker-deployment 
@@ -45,7 +56,7 @@ edit docker-compose.yml with following contents
       - pulsarbroker  
     volumes:
       - ./producers:/app
-    command: /bin/bash -c "sleep 80 && python /app/request-producer.py <github-user> <token> 2021-01-01 2021-01-31"
+    command: /bin/bash -c "sleep 80 && python /app/request-producer.py <github-user> <token> <start-date> <end-date>"
 #create duplicate of producer section to create more instances of producers/wrokers 
 #also change starting date and ending date
 #date should be in format Y-M-D
@@ -56,7 +67,7 @@ edit docker-compose.yml with following contents
       - pulsarbroker  
     volumes:
       - ./producers:/app
-    command: /bin/bash -c "sleep 80 && python /app/request-producer.py <github-user> <token> 2021-02-01 2021-02-29"
+    command: /bin/bash -c "sleep 80 && python /app/request-producer.py <github-user> <token> <start-date> <end-date>"
 
 ```
 * Note 
@@ -70,7 +81,7 @@ date should be in Y-M.D
 docker-compose build --no-cache
 docker-compose up
 ```
-
+* Wait for 3-4 mins to populate messsage into topic and then
 * Start PulsarIO connection to MongoDB
 ```
 docker exec -it single-node-docker-deployment_pulsarbroker_1 /pulsar/bin/pulsar-admin sinks create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
