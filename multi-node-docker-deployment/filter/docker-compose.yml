@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  filter:
+    build:
+      context: ./filter
+    environment:
+      - GET_HOSTS_FROM=dns      
+    volumes:
+      - ./filter:/app
+    command: /bin/bash -c "sleep 80 && python /app/filter.py"
