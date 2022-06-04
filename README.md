@@ -4,34 +4,42 @@ In this repository, we developed a Github analytic system to crawl data, process
 
 ## Overview
 .
-├── docker                  # Finaly Version of the implemented approach
-│   ├── aggregation         # Layer3: Aggregation consumer
-│   ├── consumers           # Layer2
+├── multi-node-docker-deployment
+│   ├── aggregation         
+│   ├── consumers          
 │   ├── filter    
 │   ├── mongo
 │   ├── producers    
-│   ├── pulsario    
-│   ├── cloud-init-lb.yml    
-│   └── docker-compose.yml  # Unit tests
-├── source                     # Source files (alternatively `lib` or `app`)
-├── standalone_with_docker  # Automated tests (alternatively `spec` or `tests`)
+│   ├── pulsario        
+│   └── docker-compose.yml  
+├── single-node-docker-deployment    
+│   ├── aggregation         
+│   ├── consumers          
+│   ├── filter    
+│   ├── mongo
+│   ├── producers    
+│   ├── pulsario        
+│   └── docker-compose.yml   
+├── source  #Pulsar Logic               
 └── README.md
 
 ## Getting Started
-### Dependencies
 * Pull Repository
 ```
 git pull https://github.com/rai-prashanna/de2project.git
 ```
 * Start docker-compose to 
 ```
-cd docker
+cd single-node-docker-deployment 
+```
+```
 docker-compose up --build
 ```
 * Start PulsarIO connection to MongoDB
 ```
 docker exec -it single-node-docker-deployment_pulsarbroker_1 /bin/bash
-
+```
+```
 /pulsar/bin/pulsar-admin sinks create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
 
 ```
