@@ -94,5 +94,10 @@ docker-compose -f docker-compose.yml up
 * Start Frontend instance in one of the node 
 ```
 cd multi-node-docker-deployment/frontend
+change IP to floating-Ip-of-mongoDB in config/extra-hosts-aggregation.yaml
 docker-compose -f docker-compose.yml -f config/extra-hosts-app.yaml up
+```
+* Start PulsarIO connection to MongoDB from PulsarInstance
+```
+docker exec -it <Pulsar-container-ID> /pulsar/bin/pulsar-admin sinks create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
 ```
