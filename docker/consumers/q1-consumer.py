@@ -2,7 +2,11 @@ import pulsar, _pulsar
 from datetime import datetime
 import time
 
+<<<<<<< HEAD
 PULSAR_IP = '192.168.2.139'
+=======
+PULSAR_IP = 'pulsarbroker'
+>>>>>>> ec51c047dcdf40fdbfb4b308123df2d57d56df8b
 
 if __name__ == '__main__':
     #Pulsar setup
@@ -36,7 +40,11 @@ if __name__ == '__main__':
                     #If no producer is working
                     if not producer_list:
                         agg_msg['result'] = language
+<<<<<<< HEAD
                         #Update last time
+=======
+                        #Update the latest result to the aggregation server
+>>>>>>> ec51c047dcdf40fdbfb4b308123df2d57d56df8b
                         agg_producer.send(str(agg_msg).encode('utf-8'), properties={'producer': agg_producer_name})
                         continue_flag = False
             else:

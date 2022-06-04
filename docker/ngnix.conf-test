@@ -1,0 +1,17 @@
+server {
+   listen 80;
+   server_name 0.0.0.0;
+   root /var/www/prashanna.com;
+   index index.html;
+   location / {
+      proxy_pass http://backend;
+   }
+}
+upstream backend {
+   server one:80;
+   server two:80;
+   server three:80;
+}
+
+
+for i in {0..3}; do curl localhost ;sleep 1;done

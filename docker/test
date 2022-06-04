@@ -1,0 +1,31 @@
+docker service create -p 80:80 --name swarm-nginx --replicas 2 --network test fsoppelsa/swarm-nginx
+docker -H 192.168.2.248 network create --driver=overlay overlay-net
+
+
+export JOIN_TOKEN=$(docker swarm join-token -q two)
+docker node inspect --format "{{.ManagerStatus.Addr}}" self
+
+docker service inspect --format="{{json .Endpoint.Spec.Ports}}" swarm-nginx
+docker swarm join-token manager
+
+ssh 192.168.2.72 \
+"sudo docker swarm join --token SWMTKN-1-5hnt8toqqize4s0jglh6cncvsxbft3d0fx98hxtgapvmheopkd-6s9nt8oo2hvpbnov4hjqu1k7l 192.168.2.248:2377"
+
+
+
+
+
+server {
+    listen  80;
+    listen [::]:80;
+    server_name one;
+
+    root /var/www/prashanna.com;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+
+ sudo ln -s /etc/nginx/sites-available/prashanna.com /etc/nginx/sites-enabled/

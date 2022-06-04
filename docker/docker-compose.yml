@@ -1,19 +1,17 @@
 version: "3.3"
-
-
 services:
   mongodb:
     image: mongo:latest
-    restart: always
     ports:
       - 27017:27017
       - 27018:27018
       - 27019:27019
     command: mongod 
+    # deploy:
+    #   replicas: 1
 
   mongo-express:
     image: mongo-express:latest
-    restart: always
     depends_on:
       - "mongodb"
     environment:
@@ -21,6 +19,7 @@ services:
       - ME_CONFIG_MONGODB_PORT=27017
     ports:
       - 8081:8081
+<<<<<<< HEAD
   frontend:
     build:
       context: ./frontend
@@ -29,13 +28,17 @@ services:
       - "5000:5000"
     depends_on:
       - "mongodb"
+=======
+    # deploy:
+    #   replicas: 3
+
+>>>>>>> ec51c047dcdf40fdbfb4b308123df2d57d56df8b
 
   pulsarbroker:
     hostname: pulsarbroker
     image: apachepulsar/pulsar-standalone
     ports:
       - "6650:6650"
-      - "8080:8080"
     command: /pulsar/bin/pulsar standalone
     volumes:
       - $PWD/pulsario/:/home
@@ -43,61 +46,60 @@ services:
       test: "curl -s --fail http://localhost:8080/admin/v2/brokers/health"
 
   producer:
-    build: 
+    build:
       context: ./producers
     depends_on:
       - pulsarbroker  
-    links:  
-      - pulsarbroker:pulsarbroker
-    restart: always
     volumes:
       - ./producers:/app
-    command: /bin/bash -c "sleep 60 && python app/request-producer.py rai-prashanna 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"
+    command: /bin/bash -c "sleep 80 && python /app/request-producer.py rai-prashanna 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 2021-01-01 2021-01-31"
+#create duplicate of producer section to create more instances of producers/wrokers 
+#also change starting date and ending date
+#date should be in format Y-M-D
+  producer2:
+    build:
+      context: ./producers
+    depends_on:
+      - pulsarbroker  
+    volumes:
+      - ./producers:/app
+    command: /bin/bash -c "sleep 80 && python /app/request-producer.py rai-prashanna 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 2021-02-01 2021-02-29"
   filter:
     build:
       context: ./filter
     depends_on:
       - pulsarbroker  
-    links:  
-      - pulsarbroker:pulsarbroker
-    restart: always
     volumes:
       - ./filter:/app
-    command: /bin/bash -c "sleep 60 && python /app/filter.py"
+    command: /bin/bash -c "sleep 80 && python /app/filter.py"
   q1consumer:
     build:
       context: ./consumers
     depends_on:
       - pulsarbroker  
-    links:  
-      - pulsarbroker:pulsarbroker
-    restart: always
     volumes:
       - ./consumers:/app
-    command: /bin/bash -c "sleep 60 && python /app/q1-consumer.py"
-
+    command: /bin/bash -c "sleep 80 && python /app/q1-consumer.py"
+    #command: /bin/bash -c "sleep 2000000"
   q2consumer:
     build:
       context: ./consumers
     depends_on:
       - pulsarbroker  
-    links:  
-      - pulsarbroker:pulsarbroker
-    restart: always
     volumes:
       - ./consumers:/app
-    command: /bin/bash -c "sleep 60 && python /app/q2-consumer.py 10"
-
+    #command: /bin/bash -c "sleep 2000000"
+    command: /bin/bash -c "sleep 80 && python /app/q2-consumer.py 10"
+    # deploy:
+    #   replicas: 1
   q3consumer:
     build:
       context: ./consumers
     depends_on:
       - pulsarbroker  
-    links:  
-      - pulsarbroker:pulsarbroker
-    restart: always
     volumes:
       - ./consumers:/app
+<<<<<<< HEAD
     command: /bin/bash -c "sleep 60 && python /app/q3-consumer.py"
   
   test_consumer:
@@ -113,16 +115,38 @@ services:
     command: /bin/bash -c "sleep 60 && python /app/consumer.py"
 
   aggregration:  
+=======
+    command: /bin/bash -c "sleep 80 && python /app/q3-consumer.py"
+    #command: /bin/bash -c "sleep 2000000"
+  q4consumer:
+    build:
+     context: ./consumers
+    depends_on:
+      - pulsarbroker  
+    volumes:
+      - ./consumers:/app
+    command: /bin/bash -c "sleep 80 && python /app/q4-consumer.py"
+    #command: /bin/bash -c "sleep 2000000"
+  aggregation:  
+>>>>>>> ec51c047dcdf40fdbfb4b308123df2d57d56df8b
     build:
       context: ./aggregation
     depends_on:
       - pulsarbroker
-    links:  
-      - pulsarbroker:pulsarbroker
     volumes:
       - ./aggregation:/app
-    restart: always
-    command: /bin/bash -c "sleep 200 && python app/agg-server.py" 
+    #command: /bin/bash -c "sleep 2000000"
+    command: /bin/bash -c "sleep 200 && python /app/agg-server.py 10 15 20 25" 
 
-
-
+  app:  
+    build:
+      context: ./frontend
+    depends_on:
+      - pulsarbroker
+      - mongodb
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./frontend:/app
+    #command: /bin/bash -c "sleep 2000000"
+    command: /bin/bash -c "sleep 200 && python -u /app/app.py" 
