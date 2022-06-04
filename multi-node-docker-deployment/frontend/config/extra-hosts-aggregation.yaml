@@ -1,0 +1,8 @@
+version: '3.3'
+
+# Map the "host" parameter from combiner-settings.yaml to the combiner host IP
+# Make one entry for each combiner in the network.
+services:
+   producer:
+     extra_hosts:
+        mongodb: 130.*.*.*

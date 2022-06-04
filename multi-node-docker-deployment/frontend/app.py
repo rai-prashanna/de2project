@@ -2,7 +2,7 @@ from flask import (Flask, jsonify, Markup, render_template)
 import pymongo
 from pymongo import MongoClient
 
-app = Flask(__name__, static_folder='static/templates/templates_frontend_home')
+app = Flask(__name__, static_folder='/templates/templates_frontend_home')
 
 def get_db():
     client = MongoClient(host='mongodb',

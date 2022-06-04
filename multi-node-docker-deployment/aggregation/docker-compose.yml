@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  aggregation:  
+    build:
+      context: ./aggregation
+    environment:
+      - GET_HOSTS_FROM=dns
+    volumes:
+      - ./aggregation:/app
+    command: /bin/bash -c "sleep 200 && python /app/agg-server.py 10 15 20 25" 
