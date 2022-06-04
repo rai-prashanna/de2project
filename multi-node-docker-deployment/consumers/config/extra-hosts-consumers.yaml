@@ -3,6 +3,18 @@ version: '3.3'
 # Map the "host" parameter from combiner-settings.yaml to the combiner host IP
 # Make one entry for each combiner in the network.
 services:
-   producer:
+   q1consumer:
+     extra_hosts:
+        pulsarbroker: 130.*.*.*
+
+   q2consumer:
+     extra_hosts:
+        pulsarbroker: 130.*.*.*
+
+   q3consumer:
+     extra_hosts:
+        pulsarbroker: 130.*.*.*
+   
+   q4consumer:
      extra_hosts:
         pulsarbroker: 130.*.*.*
