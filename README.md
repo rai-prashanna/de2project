@@ -3,25 +3,26 @@ This repository is part of the Data Engineering Course 2 at the Uppsala Universi
 In this repository, we developed a Github analytic system to crawl data, process it, and produce targeted results using the Pulsar streaming framework. 
 
 ## Overview
-.
-├── multi-node-docker-deployment
-│   ├── aggregation         
-│   ├── consumers          
-│   ├── filter    
-│   ├── mongo
-│   ├── producers    
-│   ├── pulsario        
-│   └── docker-compose.yml  
-├── single-node-docker-deployment    
-│   ├── aggregation         
-│   ├── consumers          
-│   ├── filter    
-│   ├── mongo
-│   ├── producers    
-│   ├── pulsario        
-│   └── docker-compose.yml   
-├── source  #Pulsar Logic               
-└── README.md
+. <br/>
+├── multi-node-docker-deployment <br/>
+│   ├── aggregation                <br/>
+│   ├── consumers          <br/>
+│   ├── filter    <br/>
+│   ├── mongo       <br/>
+│   ├── producers   <br/> 
+│   ├── pulsario        <br/>
+│   └── docker-compose.yml  <br/>
+├── single-node-docker-deployment <br/>    
+│   ├── aggregation         <br/>
+│   ├── consumers          <br/>
+│   ├── filter    <br/>
+│   ├── mongo<br/>
+│   ├── producers <br/>   
+│   ├── pulsario       <br/> 
+│   └── docker-compose.yml  <br/> 
+├── source  #Pulsar Logic        <br/>       
+└── README.md<br/>
+
 
 ## Getting Started
 * Pull Repository
