@@ -4,7 +4,7 @@ In this repository, we developed a Github analytic system to crawl data, process
 
 ## Overview
 . <br/>
-├── multi-node-docker-deployment <br/>
+├── multi-node-docker-deployment    <br/>
 │   ├── aggregation                <br/>
 │   ├── consumers          <br/>
 │   ├── filter    <br/>
@@ -12,15 +12,15 @@ In this repository, we developed a Github analytic system to crawl data, process
 │   ├── producers   <br/> 
 │   ├── pulsario        <br/>
 │   └── docker-compose.yml  <br/>
-├── single-node-docker-deployment <br/>    
+├── single-node-docker-deployment <br/>
 │   ├── aggregation         <br/>
 │   ├── consumers          <br/>
 │   ├── filter    <br/>
 │   ├── mongo<br/>
-│   ├── producers <br/>   
+│   ├── producers <br/>
 │   ├── pulsario       <br/> 
 │   └── docker-compose.yml  <br/> 
-├── source  #Pulsar Logic        <br/>       
+├── source                        #Pulsar Logic    <br/>
 └── README.md<br/>
 
 
