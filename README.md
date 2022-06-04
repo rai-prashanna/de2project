@@ -1,4 +1,4 @@
-# GitHub analytic system using the streaming framework Pulsar | Project 2 | Team 11
+# GitHub analytic system using the streaming framework Pulsar | Project 2 | Team 3
 This repository is part of the Data Engineering Course 2 at the Uppsala University
 In this repository, we developed a Github analytic system to crawl data, process it, and produce targeted results using the Pulsar streaming framework. 
 
