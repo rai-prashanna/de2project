@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  producer:
+    build:
+      context: ./producers 
+    environment:
+      - GET_HOSTS_FROM=dns
+    volumes:
+      - ./producers:/app
+    command: /bin/bash -c "sleep 80 && python /app/request-producer.py rai-prashanna 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 2021-01-01 2021-01-31"
