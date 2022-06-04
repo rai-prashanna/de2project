@@ -5,4 +5,4 @@ version: '3.3'
 services:
    producer:
      extra_hosts:
-        pulsarbroker: 130.*.*.*
+        pulsarbroker: 130.238.29.20 

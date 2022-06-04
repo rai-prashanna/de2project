@@ -2,12 +2,10 @@ version: "3.3"
 services:
   app:  
     build:
-      context: ./frontend
+      context: .
     environment:
       - GET_HOSTS_FROM=dns      
     ports:
       - "5000:5000"
-    volumes:
-      - ./frontend:/app
     command: /bin/bash -c "sleep 200 && python -u /app/app.py" 
 
