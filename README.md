@@ -28,3 +28,10 @@ git pull https://github.com/rai-prashanna/de2project.git
 cd docker
 docker-compose up --build
 ```
+* Start PulsarIO connection to MongoDB
+```
+docker exec -it single-node-docker-deployment_pulsarbroker_1 /bin/bash
+
+/pulsar/bin/pulsar-admin sinks create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
+
+```
