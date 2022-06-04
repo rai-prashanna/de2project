@@ -1,0 +1,55 @@
+version: "3.3"
+
+
+services:
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+      - 27018:27018
+      - 27019:27019
+    command: mongod 
+
+  mongo-express:
+    image: mongo-express:latest
+    restart: always
+    depends_on:
+      - "mongodb"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+    ports:
+      - 8081:8081
+  
+  frontend:
+    build: 
+      context: ./frontend
+    command: python -u app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      - "mongodb"
+
+  pulsarbroker:
+    hostname: pulsarbroker
+    image: apachepulsar/pulsar-standalone
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    command: pulsar/bin/pulsar standalone
+  
+  producer:
+    build: 
+      context: ./Producers
+    depends_on:
+      - pulsarbroker
+    links:  
+      - pulsarbroker:pulsarbroker
+    restart: always
+    volumes:
+      - ./Producers:/app
+    command: /bin/bash -c "sleep 70 && python /app/producer_result.py" 
+
