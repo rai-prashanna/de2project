@@ -154,3 +154,8 @@ docker-compose -f docker-compose.yml -f config/extra-hosts-app.yaml up
 ```
 docker exec -it <Pulsar-container-ID> /pulsar/bin/pulsar-admin sinks create --sink-type mongo --sink-config-file /home/mongodb-sink.yml --inputs DE2-result
 ```
+* Screenshots
+![image](https://user-images.githubusercontent.com/21035884/172048034-c62671ca-6971-4773-9427-09dd259697ef.png)
+![image](https://user-images.githubusercontent.com/21035884/172048054-84f26dca-1980-4391-8280-b3490775f427.png)
+
+
