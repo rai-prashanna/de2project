@@ -25,6 +25,8 @@ In this repository, we developed a Github analytic system to crawl data, process
 
 
 ## Getting Started in single node
+* Create an instance in snic cloud
+* inject cloud-init.yml script provided within source folder
 * Pull Repository
 ```
 git pull https://github.com/rai-prashanna/de2project.git
@@ -47,6 +49,8 @@ docker-compose build --no-cache
 docker-compose up
 ```
 * different producers can be used to fetching data from diferent dates as follows
+* edit docker-compose.yml with following contents
+
 ```
 edit docker-compose.yml with following contents
   producer:
@@ -98,7 +102,8 @@ http://<ip-address>:8081/
 ```
 ## Getting Started in mulit-node
 * Create 6 instances in snic cloud
-
+* Replace your ssh public-key within cloud-init 
+* inject cloud-init.yml script provided within source folder
 * Clone repository  
 ```
 git pull https://github.com/rai-prashanna/de2project.git
